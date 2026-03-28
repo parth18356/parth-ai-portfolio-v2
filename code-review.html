@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>AI Code Review — Parth.ai</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230f172a'/><rect x='25' y='30' width='50' height='45' rx='10' fill='none' stroke='%2322d3ee' stroke-width='4'/><circle cx='38' cy='48' r='5' fill='%2322d3ee'/><circle cx='62' cy='48' r='5' fill='%2322d3ee'/><rect x='38' y='62' width='24' height='4' rx='2' fill='%234ade80'/></svg>" type="image/svg+xml">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -17,11 +18,29 @@ h1 span{color:#22d3ee}
 .sub{color:#94a3b8;font-size:13px;margin-bottom:28px;line-height:1.7}
 .card{background:#0f172a;border:1px solid #1e293b;border-radius:12px;padding:24px;margin-bottom:20px}
 .sec-label{font-size:11px;color:#22d3ee;letter-spacing:2px;text-transform:uppercase;display:block;margin-bottom:12px}
-.tabs{display:flex;gap:2px;background:#070b13;border-radius:8px;padding:3px;margin-bottom:16px;border:1px solid #1e293b}
+
+/* EDITOR TABS */
+.tabs{display:flex;gap:2px;background:#070b13;border-radius:8px;padding:3px;margin-bottom:0;border:1px solid #1e293b;border-bottom:none;border-radius:8px 8px 0 0;}
 .tab-btn{flex:1;padding:9px;text-align:center;font-size:12px;border-radius:6px;cursor:pointer;border:none;background:transparent;color:#64748b;transition:all .2s}
 .tab-btn.active{background:#1e293b;color:#e2e8f0}
-textarea{width:100%;min-height:220px;background:#040810;border:1px solid #1e293b;border-radius:8px;padding:14px;font-size:13px;color:#4ade80;font-family:'Courier New',monospace;resize:vertical;line-height:1.8;outline:none;display:block}
-textarea:focus{border-color:#22d3ee}
+
+/* CODE EDITOR WRAPPER */
+.editor-wrap{position:relative;background:#040810;border:1px solid #1e293b;border-radius:0 0 8px 8px;overflow:hidden;}
+.editor-header{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:#070b13;border-bottom:1px solid #1e293b;}
+.editor-dots{display:flex;gap:6px;}
+.edot{width:10px;height:10px;border-radius:50%;}
+.lang-select{background:#1e293b;border:none;color:#94a3b8;font-size:11px;border-radius:4px;padding:3px 8px;cursor:pointer;outline:none;}
+.lang-select option{background:#1e293b;}
+.line-nums{position:absolute;left:0;top:0;bottom:0;width:42px;background:#040810;border-right:1px solid #1e293b;padding:14px 0;text-align:right;font-family:'Courier New',monospace;font-size:13px;color:#334155;line-height:1.8;pointer-events:none;user-select:none;z-index:2;padding-right:8px;}
+.code-editor{width:100%;min-height:240px;background:transparent;border:none;padding:14px 14px 14px 56px;font-size:13px;color:#abb2bf;font-family:'Courier New',monospace;resize:vertical;line-height:1.8;outline:none;display:block;tab-size:4;caret-color:#22d3ee;}
+.code-editor::selection{background:rgba(34,211,238,.2);}
+
+/* HIGHLIGHTED PREVIEW */
+.code-preview{display:none;padding:14px 14px 14px 56px;font-size:13px;font-family:'Courier New',monospace;line-height:1.8;overflow-x:auto;min-height:240px;background:transparent;}
+.code-preview pre{margin:0;background:transparent!important;}
+.code-preview code{background:transparent!important;font-size:13px!important;font-family:'Courier New',monospace!important;line-height:1.8!important;}
+
+/* UPLOAD */
 .drop-zone{border:1.5px dashed #334155;border-radius:10px;padding:28px 24px;text-align:center;cursor:pointer;background:#070b13;position:relative;transition:all .2s}
 .drop-zone:hover{border-color:#22d3ee;background:rgba(34,211,238,.03)}
 .drop-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
@@ -31,6 +50,7 @@ textarea:focus{border-color:#22d3ee}
 .file-item{display:flex;justify-content:space-between;align-items:center;background:rgba(34,211,238,.05);border:1px solid rgba(34,211,238,.15);border-radius:6px;padding:8px 14px;font-size:11px}
 .file-item span{color:#22d3ee}
 .file-rm{color:#f87171;background:none;border:none;cursor:pointer;font-size:16px}
+
 .opt-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin-bottom:20px}
 .opt{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:6px;border:1px solid #1e293b;background:#070b13;cursor:pointer;transition:all .2s;user-select:none}
 .opt.on{border-color:#22d3ee;background:rgba(34,211,238,.07)}
@@ -60,7 +80,16 @@ textarea:focus{border-color:#22d3ee}
 .issue{border-left:3px solid;border-radius:0 8px 8px 0;padding:14px 16px;margin-bottom:10px;background:#070b13}
 .ititle{font-size:13px;font-weight:700;margin-bottom:5px}
 .ibody{font-size:12px;color:#94a3b8;line-height:1.75}
-pre.icode{background:#040810;border-radius:6px;padding:12px 14px;font-size:12px;color:#4ade80;margin-top:10px;overflow-x:auto;white-space:pre-wrap;word-break:break-word;border:1px solid rgba(74,222,128,.15);font-family:'Courier New',monospace}
+
+/* HIGHLIGHTED CODE BLOCKS IN OUTPUT */
+.code-block-wrap{position:relative;margin-top:10px;border-radius:8px;overflow:hidden;border:1px solid #1e293b;}
+.code-block-hdr{display:flex;align-items:center;justify-content:space-between;padding:7px 14px;background:#070b13;border-bottom:1px solid #1e293b;}
+.code-block-lang{font-size:10px;color:#64748b;font-family:'Courier New',monospace;}
+.copy-btn-sm{font-size:10px;padding:3px 9px;border-radius:4px;background:rgba(34,211,238,.1);color:#22d3ee;border:1px solid rgba(34,211,238,.2);cursor:pointer;}
+.code-block-wrap pre{margin:0!important;border-radius:0!important;}
+.code-block-wrap code{font-size:12px!important;font-family:'Courier New',monospace!important;line-height:1.7!important;}
+.hljs{background:#040810!important;padding:14px!important;}
+
 .summary-box{font-size:13px;color:#f1f5f9;line-height:1.85;background:rgba(56,189,248,.05);padding:16px;border-radius:8px;border:1px solid rgba(56,189,248,.12);margin-bottom:12px}
 .positive{border-left:3px solid #4ade80;border-radius:0 8px 8px 0;padding:12px 16px;margin-bottom:8px;background:#070b13;font-size:12px;color:#d1fae5;line-height:1.7}
 .copy-btn{font-size:11px;padding:5px 12px;border-radius:4px;background:rgba(34,211,238,.1);color:#22d3ee;border:1px solid rgba(34,211,238,.2);cursor:pointer}
@@ -76,7 +105,7 @@ pre.icode{background:#040810;border-radius:6px;padding:12px 14px;font-size:12px;
 
 <div class="wrap">
   <h1>AI Code Review &amp; <span>Refactoring</span></h1>
-  <p class="sub">Paste code or upload your repo files. AI reviews bugs, security holes, reusability issues — and adds professional comments to your code.</p>
+  <p class="sub">Paste code or upload files. AI reviews bugs, security holes, reusability — and generates a fully syntax-highlighted refactored version.</p>
 
   <div class="card">
     <span class="sec-label">Code Input</span>
@@ -84,15 +113,45 @@ pre.icode{background:#040810;border-radius:6px;padding:12px 14px;font-size:12px;
       <button class="tab-btn active" onclick="switchTab('paste',this)">📝 Paste Code</button>
       <button class="tab-btn" onclick="switchTab('upload',this)">📁 Upload Files</button>
     </div>
+
     <div id="paste-panel">
-      <textarea id="code" placeholder="# Paste your Python, C#, JS, Java or any code here..."></textarea>
+      <div class="editor-wrap">
+        <div class="editor-header">
+          <div class="editor-dots">
+            <div class="edot" style="background:#ef4444"></div>
+            <div class="edot" style="background:#f59e0b"></div>
+            <div class="edot" style="background:#22c55e"></div>
+          </div>
+          <select class="lang-select" id="langSelect" onchange="onLangChange()">
+            <option value="python">Python</option>
+            <option value="javascript">JavaScript</option>
+            <option value="typescript">TypeScript</option>
+            <option value="csharp">C#</option>
+            <option value="java">Java</option>
+            <option value="cpp">C++</option>
+            <option value="go">Go</option>
+            <option value="rust">Rust</option>
+            <option value="sql">SQL</option>
+            <option value="bash">Bash</option>
+          </select>
+        </div>
+        <div style="position:relative;">
+          <div class="line-nums" id="lineNums">1</div>
+          <textarea class="code-editor" id="code" spellcheck="false"
+            oninput="updateLineNums();syncHighlight()"
+            onscroll="syncScroll()"
+            onkeydown="handleTab(event)"
+            placeholder="# Paste your code here..."></textarea>
+        </div>
+      </div>
     </div>
+
     <div id="upload-panel" style="display:none">
       <div class="drop-zone" id="dropZone">
         <input type="file" id="fileInput" multiple onchange="addFiles(this.files)">
         <div style="font-size:32px;margin-bottom:10px">📂</div>
         <h3>Click to select files or drag & drop</h3>
-        <p>Any file type — .py .cs .js .ts .java .go .cpp and more</p>
+        <p>.py .cs .js .ts .java .go .cpp and more</p>
       </div>
       <div class="file-list" id="fileList"></div>
     </div>
@@ -131,10 +190,88 @@ pre.icode{background:#040810;border-radius:6px;padding:12px 14px;font-size:12px;
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/csharp.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/typescript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/java.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/rust.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
 <script>
 const GROQ_URL='/api/chat';
-
 let files=[],activeTab='paste',currentResult=null;
+
+// ── LANGUAGE MAP for hljs ──
+const LANG_MAP={python:'python',javascript:'javascript',typescript:'typescript',csharp:'csharp',java:'java',cpp:'cpp',go:'go',rust:'rust',sql:'sql',bash:'bash'};
+
+// ── AUTO DETECT LANGUAGE ──
+function detectLang(code){
+  if(/def |import |print\(|#.*python|:\s*$/.test(code))return'python';
+  if(/using System|namespace |\.cs|Console\.Write/.test(code))return'csharp';
+  if(/public class|void main|System\.out/.test(code))return'java';
+  if(/func |package main|fmt\./.test(code))return'go';
+  if(/fn |let mut|impl |use std/.test(code))return'rust';
+  if(/SELECT|INSERT|CREATE TABLE/i.test(code))return'sql';
+  if(/const |let |=>|require\(|npm/.test(code))return'javascript';
+  if(/interface |type.*=.*{/.test(code))return'typescript';
+  if(/#include|std::|cout/.test(code))return'cpp';
+  return'python';
+}
+
+function onLangChange(){syncHighlight();}
+
+// ── LINE NUMBERS ──
+function updateLineNums(){
+  const lines=document.getElementById('code').value.split('\n').length;
+  document.getElementById('lineNums').innerHTML=Array.from({length:lines},(_,i)=>i+1).join('<br>');
+}
+
+function syncScroll(){
+  const ta=document.getElementById('code');
+  document.getElementById('lineNums').scrollTop=ta.scrollTop;
+}
+
+function syncHighlight(){
+  const code=document.getElementById('code').value;
+  // Auto-detect and update select
+  const detected=detectLang(code);
+  const sel=document.getElementById('langSelect');
+  if(sel.value!==detected&&code.length>10)sel.value=detected;
+  updateLineNums();
+}
+
+// ── TAB KEY ──
+function handleTab(e){
+  if(e.key==='Tab'){
+    e.preventDefault();
+    const ta=document.getElementById('code');
+    const s=ta.selectionStart,en=ta.selectionEnd;
+    ta.value=ta.value.substring(0,s)+'    '+ta.value.substring(en);
+    ta.selectionStart=ta.selectionEnd=s+4;
+    syncHighlight();
+  }
+}
+
+// ── HIGHLIGHTED CODE BLOCK ──
+function makeCodeBlock(code,lang,copyFn){
+  const safeLang=LANG_MAP[lang]||'python';
+  let highlighted;
+  try{highlighted=hljs.highlight(code,{language:safeLang}).value;}
+  catch{highlighted=hljs.highlightAuto(code).value;}
+  return `<div class="code-block-wrap">
+    <div class="code-block-hdr">
+      <span class="code-block-lang">${safeLang}</span>
+      <button class="copy-btn-sm" onclick="${copyFn}">📋 Copy</button>
+    </div>
+    <pre><code class="hljs language-${safeLang}">${highlighted}</code></pre>
+  </div>`;
+}
+
+// ── TABS ──
 function switchTab(t,btn){
   activeTab=t;
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
@@ -162,50 +299,55 @@ function setLoading(on,msg){
 }
 function showErr(msg){const el=document.getElementById('errBox');el.innerHTML='❌ <strong>Error:</strong> '+msg;el.classList.add('show');}
 
+// ── MAIN REVIEW ──
 async function runReview(){
   const code=document.getElementById('code').value.trim();
   if(activeTab==='paste'&&!code){alert('Paste some code first.');return;}
   if(activeTab==='upload'&&!files.length){alert('Upload at least one file.');return;}
-
   document.getElementById('errBox').classList.remove('show');
   document.getElementById('output').classList.remove('show');
   setLoading(true,'AI is reviewing your code…');
+  const lang=document.getElementById('langSelect').value;
 
   try{
     const src=activeTab==='upload'?await readFiles():code;
     const focus=[...document.querySelectorAll('.opt.on span')].map(el=>el.textContent).join(', ');
     const wantComments=[...document.querySelectorAll('.opt.on span')].some(el=>el.textContent.includes('Comments'));
 
-    const prompt=`You are a senior software engineer. Review this code.
+    const msgs=['Analyzing structure…','Finding issues…','Refactoring code…','Writing review…'];
+    let mi=0;const lInt=setInterval(()=>{document.getElementById('loaderTxt').textContent=msgs[++mi%msgs.length];},1200);
+
+    const prompt=`You are a senior ${lang} engineer. Review this code thoroughly.
 Focus: ${focus}
+Language: ${lang}
 CODE:
-\`\`\`
+\`\`\`${lang}
 ${src.substring(0,12000)}
 \`\`\`
 ${wantComments?'Add professional inline comments. Put full commented code in "commented_code" field.':''}
-Respond ONLY with raw JSON (no markdown fences, no extra text):
-{"scores":{"overall":72,"reusability":65,"performance":80,"security":70},"summary":"2-3 sentence overview","critical":[{"title":"...","description":"...","fix":"..."}],"warnings":[{"title":"...","description":"...","fix":"..."}],"improvements":[{"title":"...","description":"...","fix":"..."}],"refactored":"full corrected code"${wantComments?',"commented_code":"full code with comments"':''},"positives":["strength 1","strength 2"]}`;
+Return ONLY raw JSON (no markdown fences):
+{"scores":{"overall":72,"reusability":65,"performance":80,"security":70},"summary":"2-3 sentence overview","critical":[{"title":"...","description":"...","fix":"short code fix snippet"}],"warnings":[{"title":"...","description":"...","fix":"short code fix snippet"}],"improvements":[{"title":"...","description":"...","fix":"short code fix snippet"}],"refactored":"FULL corrected code in ${lang}"${wantComments?',"commented_code":"full code with inline comments"':''},"positives":["strength 1","strength 2","strength 3"]}`;
 
-    const res=await fetch(GROQ_URL,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[{role:'user',content:prompt}],max_tokens:4000,temperature:.2})
-    });
+    const res=await fetch(GROQ_URL,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[{role:'user',content:prompt}],max_tokens:4000,temperature:.2})});
+    clearInterval(lInt);
     const data=await res.json();
     if(!res.ok||data.error)throw new Error(data.error?.message||'API error');
     const raw=data.choices?.[0]?.message?.content||'';
     if(!raw)throw new Error('Empty response.');
-
     let parsed;
     const clean=raw.replace(/```json|```/gm,'').trim();
     try{parsed=JSON.parse(clean);}
-    catch{const m=clean.match(/\{[\s\S]*\}/);if(!m)throw new Error('Bad JSON response');parsed=JSON.parse(m[0]);}
-    currentResult=parsed;setLoading(false);renderOutput(parsed);
+    catch{const m=clean.match(/\{[\s\S]*\}/);if(!m)throw new Error('Bad JSON');parsed=JSON.parse(m[0]);}
+    currentResult=parsed;currentResult._lang=lang;
+    setLoading(false);renderOutput(parsed,lang);
   }catch(e){setLoading(false);showErr(e.message);}
 }
 
+// ── RENDER OUTPUT ──
 function scoreCol(v){return v>=80?'#4ade80':v>=55?'#fbbf24':'#f87171';}
-function renderOutput(r){
+
+function renderOutput(r,lang){
   document.getElementById('output').classList.add('show');
   const sc=r.scores||{};
   document.getElementById('scoreGrid').innerHTML=[['Overall',sc.overall||0],['Reusability',sc.reusability||0],['Performance',sc.performance||0],['Security',sc.security||0]].map(([l,v])=>{
@@ -220,13 +362,20 @@ function renderOutput(r){
 
   let html='';
   if(r.summary)html+=`<div class="summary-box">${esc(r.summary)}</div>`;
-  if(r.critical?.length)html+=`<div class="shdr">🔴 Critical (${r.critical.length})</div>`+r.critical.map(i=>issueHtml(i,'#f87171')).join('');
-  if(r.warnings?.length)html+=`<div class="shdr">🟡 Warnings (${r.warnings.length})</div>`+r.warnings.map(i=>issueHtml(i,'#fbbf24')).join('');
-  if(r.improvements?.length)html+=`<div class="shdr">🔵 Improvements (${r.improvements.length})</div>`+r.improvements.map(i=>issueHtml(i,'#38bdf8')).join('');
-  if(r.positives?.length)html+=`<div class="shdr">✅ What's Good</div>`+r.positives.map(p=>`<div class="positive">${esc(p)}</div>`).join('');
+  if(r.critical?.length)html+=`<div class="shdr">🔴 Critical (${r.critical.length})</div>`+r.critical.map(i=>issueHtml(i,'#f87171',lang)).join('');
+  if(r.warnings?.length)html+=`<div class="shdr">🟡 Warnings (${r.warnings.length})</div>`+r.warnings.map(i=>issueHtml(i,'#fbbf24',lang)).join('');
+  if(r.improvements?.length)html+=`<div class="shdr">🔵 Improvements (${r.improvements.length})</div>`+r.improvements.map(i=>issueHtml(i,'#38bdf8',lang)).join('');
+  if(r.positives?.length)html+=`<div class="shdr">✅ What's Good</div>`+r.positives.map(p=>`<div class="positive">✓ ${esc(p)}</div>`).join('');
 
-  const cHtml=r.commented_code?`<p style="font-size:13px;color:#94a3b8;margin-bottom:10px;">Professional comments added to every function and class.</p><button class="copy-btn" onclick="navigator.clipboard.writeText(currentResult.commented_code).then(()=>alert('Copied!'))">📋 Copy</button><pre class="icode" style="margin-top:10px;max-height:500px;overflow-y:auto">${esc(r.commented_code)}</pre>`:'';
-  const rHtml=r.refactored?`<p style="font-size:13px;color:#94a3b8;margin-bottom:10px;">Full refactored version with all issues fixed.</p><button class="copy-btn" onclick="navigator.clipboard.writeText(currentResult.refactored).then(()=>alert('Copied!'))">📋 Copy</button><pre class="icode" style="margin-top:10px;max-height:500px;overflow-y:auto">${esc(r.refactored)}</pre>`:'';
+  const cHtml=r.commented_code?`
+    <p style="font-size:13px;color:#94a3b8;margin-bottom:12px;">Professional inline comments added throughout.</p>
+    ${makeCodeBlock(r.commented_code,lang,"navigator.clipboard.writeText(currentResult.commented_code).then(()=>alert('Copied!'))")}`:
+    '<p style="color:#64748b;font-size:13px;">Enable "Add Code Comments" option and re-run.</p>';
+
+  const rHtml=r.refactored?`
+    <p style="font-size:13px;color:#94a3b8;margin-bottom:12px;">All issues fixed — production-ready version.</p>
+    ${makeCodeBlock(r.refactored,lang,"navigator.clipboard.writeText(currentResult.refactored).then(()=>alert('Copied!'))")}`:
+    '<p style="color:#64748b;font-size:13px;">No refactored version returned.</p>';
 
   document.getElementById('panels').innerHTML=`
     <div class="out-panel show" id="panel-review">${html}</div>
@@ -234,22 +383,32 @@ function renderOutput(r){
     <div class="out-panel" id="panel-refactored">${rHtml}</div>`;
 }
 
+function issueHtml(i,col,lang){
+  const fixBlock=i.fix?makeCodeBlock(i.fix,lang,''):'';
+  return `<div class="issue" style="border-color:${col}">
+    <div class="ititle" style="color:${col}">${esc(i.title||'')}</div>
+    <div class="ibody">${esc(i.description||'')}${fixBlock}</div>
+  </div>`;
+}
+
 function switchOut(id,btn){
   document.querySelectorAll('.out-tab').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('.out-panel').forEach(p=>p.classList.remove('show'));
   btn.classList.add('active');document.getElementById('panel-'+id).classList.add('show');
 }
-function issueHtml(i,col){return `<div class="issue" style="border-color:${col}"><div class="ititle" style="color:${col}">${esc(i.title||'')}</div><div class="ibody">${esc(i.description||'')}${i.fix?`<pre class="icode">${esc(i.fix)}</pre>`:''}</div></div>`;}
 function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function copyJSON(){navigator.clipboard.writeText(JSON.stringify(currentResult,null,2)).then(()=>alert('JSON copied!'));}
 function clearAll(){
-  document.getElementById('code').value='';files=[];renderFiles();
+  document.getElementById('code').value='';
+  document.getElementById('lineNums').innerHTML='1';
+  files=[];renderFiles();
   document.getElementById('output').classList.remove('show');
   document.getElementById('errBox').classList.remove('show');
   document.getElementById('runBtn').disabled=false;
   document.getElementById('runBtn').textContent='▶ Run AI Review';
 }
 
+// ── DRAG DROP ──
 const dz=document.getElementById('dropZone');
 if(dz){
   dz.addEventListener('dragover',e=>{e.preventDefault();dz.style.borderColor='#22d3ee';});
@@ -266,6 +425,9 @@ if(dz){
     addFiles(all);
   });
 }
+
+// Init line numbers
+updateLineNums();
 </script>
 </body>
 </html>
