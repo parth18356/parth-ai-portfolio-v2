@@ -329,7 +329,7 @@ Return ONLY raw JSON (no markdown fences):
 {"scores":{"overall":72,"reusability":65,"performance":80,"security":70},"summary":"2-3 sentence overview","critical":[{"title":"...","description":"...","fix":"short code fix snippet"}],"warnings":[{"title":"...","description":"...","fix":"short code fix snippet"}],"improvements":[{"title":"...","description":"...","fix":"short code fix snippet"}],"refactored":"FULL corrected code in ${lang}"${wantComments?',"commented_code":"full code with inline comments"':''},"positives":["strength 1","strength 2","strength 3"]}`;
 
     const res=await fetch(GROQ_URL,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[{role:'user',content:prompt}],max_tokens:4000,temperature:.2})});
+      body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[{role:'user',content:prompt}],max_tokens:4000,temperature:.1})});
     clearInterval(lInt);
     const data=await res.json();
     if(!res.ok||data.error)throw new Error(data.error?.message||'API error');
@@ -337,8 +337,26 @@ Return ONLY raw JSON (no markdown fences):
     if(!raw)throw new Error('Empty response.');
     let parsed;
     const clean=raw.replace(/```json|```/gm,'').trim();
-    try{parsed=JSON.parse(clean);}
-    catch{const m=clean.match(/\{[\s\S]*\}/);if(!m)throw new Error('Bad JSON');parsed=JSON.parse(m[0]);}
+    function safeParseJSON(str){
+      // Remove bad control characters except \n \r \t
+      const sanitized=str.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g,'');
+      // Escape unescaped newlines/tabs inside JSON string values
+      const fixed=sanitized.replace(/"((?:[^"\\]|\\.)*)"/gs,(match,inner)=>{
+        const escaped=inner
+          .replace(/\n/g,'\\n')
+          .replace(/\r/g,'\\r')
+          .replace(/\t/g,'\\t');
+        return `"${escaped}"`;
+      });
+      return JSON.parse(fixed);
+    }
+    try{parsed=safeParseJSON(clean);}
+    catch{
+      const m=clean.match(/\{[\s\S]*\}/);
+      if(!m)throw new Error('Bad JSON response from AI. Please try again.');
+      try{parsed=safeParseJSON(m[0]);}
+      catch(e){throw new Error('Could not parse AI response. Try again.');}
+    }
     currentResult=parsed;currentResult._lang=lang;
     setLoading(false);renderOutput(parsed,lang);
   }catch(e){setLoading(false);showErr(e.message);}
