@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Code Review — Parth.ai</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230f172a'/><rect x='25' y='30' width='50' height='45' rx='10' fill='none' stroke='%2322d3ee' stroke-width='4'/><circle cx='38' cy='48' r='5' fill='%2322d3ee'/><circle cx='62' cy='48' r='5' fill='%2322d3ee'/><rect x='38' y='62' width='24' height='4' rx='2' fill='%234ade80'/></svg>" type="image/svg+xml">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a0a0f;color:#e2e8f0;font-family:system-ui,sans-serif;min-height:100vh}
+nav{background:#0f172a;border-bottom:1px solid #1e293b;padding:14px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.logo{color:#22d3ee;font-weight:700;font-size:15px}.logo b{color:#f1f5f9}
+.badge{font-size:11px;padding:4px 12px;border-radius:4px;background:rgba(34,211,238,.1);color:#22d3ee;border:1px solid rgba(34,211,238,.25)}
+.wrap{max-width:960px;margin:0 auto;padding:32px 24px}
+h1{font-size:26px;font-weight:700;color:#f1f5f9;margin-bottom:8px}
+h1 span{color:#22d3ee}
+.sub{color:#94a3b8;font-size:13px;margin-bottom:28px;line-height:1.7}
+.card{background:#0f172a;border:1px solid #1e293b;border-radius:12px;padding:24px;margin-bottom:20px}
+.sec-label{font-size:11px;color:#22d3ee;letter-spacing:2px;text-transform:uppercase;display:block;margin-bottom:12px}
+.tabs{display:flex;gap:2px;background:#070b13;border-radius:8px;padding:3px;margin-bottom:16px;border:1px solid #1e293b}
+.tab-btn{flex:1;padding:9px;text-align:center;font-size:12px;border-radius:6px;cursor:pointer;border:none;background:transparent;color:#64748b;transition:all .2s}
+.tab-btn.active{background:#1e293b;color:#e2e8f0}
+textarea{width:100%;min-height:220px;background:#040810;border:1px solid #1e293b;border-radius:8px;padding:14px;font-size:13px;color:#4ade80;font-family:'Courier New',monospace;resize:vertical;line-height:1.8;outline:none;display:block}
+textarea:focus{border-color:#22d3ee}
+.drop-zone{border:1.5px dashed #334155;border-radius:10px;padding:28px 24px;text-align:center;cursor:pointer;background:#070b13;position:relative;transition:all .2s}
+.drop-zone:hover{border-color:#22d3ee;background:rgba(34,211,238,.03)}
+.drop-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.drop-zone h3{font-size:14px;color:#f1f5f9;margin-bottom:6px}
+.drop-zone p{font-size:12px;color:#64748b}
+.file-list{margin-top:10px;display:flex;flex-direction:column;gap:6px;max-height:150px;overflow-y:auto}
+.file-item{display:flex;justify-content:space-between;align-items:center;background:rgba(34,211,238,.05);border:1px solid rgba(34,211,238,.15);border-radius:6px;padding:8px 14px;font-size:11px}
+.file-item span{color:#22d3ee}
+.file-rm{color:#f87171;background:none;border:none;cursor:pointer;font-size:16px}
+.opt-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin-bottom:20px}
+.opt{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:6px;border:1px solid #1e293b;background:#070b13;cursor:pointer;transition:all .2s;user-select:none}
+.opt.on{border-color:#22d3ee;background:rgba(34,211,238,.07)}
+.opt span{font-size:12px;color:#64748b}.opt.on span{color:#e2e8f0}
+.opt input{accent-color:#22d3ee;pointer-events:none}
+.btn-row{display:flex;gap:12px;flex-wrap:wrap}
+.run-btn{padding:12px 36px;border-radius:8px;font-size:13px;font-weight:700;border:none;cursor:pointer;background:#38bdf8;color:#0a0a0f;transition:all .2s}
+.run-btn:disabled{background:#334155;color:#64748b;cursor:not-allowed}
+.clr-btn{padding:12px 20px;border-radius:8px;font-size:13px;font-weight:700;border:1px solid rgba(248,113,113,.3);cursor:pointer;background:rgba(248,113,113,.1);color:#f87171}
+.loader{display:none;align-items:center;gap:12px;padding:18px 20px;background:rgba(56,189,248,.05);border:1px solid rgba(56,189,248,.2);border-radius:10px;font-size:13px;color:#38bdf8;margin-bottom:20px}
+.loader.show{display:flex}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{width:18px;height:18px;border:2px solid rgba(56,189,248,.2);border-top-color:#38bdf8;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+.err{display:none;background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.3);border-radius:8px;padding:18px;color:#f87171;font-size:13px;line-height:1.8;margin-bottom:20px}
+.err.show{display:block}
+.out{display:none}.out.show{display:block}
+.score-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.score-card{background:#070b13;border:1px solid #1e293b;border-radius:10px;padding:16px;text-align:center}
+.score-val{font-size:26px;font-weight:700}
+.score-lbl{font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-top:6px}
+.prog{height:4px;background:#1e293b;border-radius:2px;margin:8px 0 4px;overflow:hidden}
+.prog-fill{height:100%;border-radius:2px;transition:width .6s}
+.out-tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.out-tab{padding:8px 18px;border-radius:6px;font-size:12px;font-weight:700;border:none;cursor:pointer;background:#1e293b;color:#64748b;transition:all .2s}
+.out-tab.active{background:#22d3ee;color:#0a0a0f}
+.shdr{font-size:11px;color:#22d3ee;letter-spacing:2px;text-transform:uppercase;padding:10px 0 8px;border-bottom:1px solid #1e293b;margin:18px 0 12px}
+.issue{border-left:3px solid;border-radius:0 8px 8px 0;padding:14px 16px;margin-bottom:10px;background:#070b13}
+.ititle{font-size:13px;font-weight:700;margin-bottom:5px}
+.ibody{font-size:12px;color:#94a3b8;line-height:1.75}
+pre.icode{background:#040810;border-radius:6px;padding:12px 14px;font-size:12px;color:#4ade80;margin-top:10px;overflow-x:auto;white-space:pre-wrap;word-break:break-word;border:1px solid rgba(74,222,128,.15);font-family:'Courier New',monospace}
+.summary-box{font-size:13px;color:#f1f5f9;line-height:1.85;background:rgba(56,189,248,.05);padding:16px;border-radius:8px;border:1px solid rgba(56,189,248,.12);margin-bottom:12px}
+.positive{border-left:3px solid #4ade80;border-radius:0 8px 8px 0;padding:12px 16px;margin-bottom:8px;background:#070b13;font-size:12px;color:#d1fae5;line-height:1.7}
+.copy-btn{font-size:11px;padding:5px 12px;border-radius:4px;background:rgba(34,211,238,.1);color:#22d3ee;border:1px solid rgba(34,211,238,.2);cursor:pointer}
+.out-panel{display:none}.out-panel.show{display:block}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo"><b>Parth</b>.ai — Code Review</div>
+  <div class="badge">⚡ Groq · Llama 3.3 70B</div>
+</nav>
+
+<div class="wrap">
+  <h1>AI Code Review &amp; <span>Refactoring</span></h1>
+  <p class="sub">Paste code or upload your repo files. AI reviews bugs, security holes, reusability issues — and adds professional comments to your code.</p>
+
+  <div class="card">
+    <span class="sec-label">Code Input</span>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('paste',this)">📝 Paste Code</button>
+      <button class="tab-btn" onclick="switchTab('upload',this)">📁 Upload Files</button>
+    </div>
+    <div id="paste-panel">
+      <textarea id="code" placeholder="# Paste your Python, C#, JS, Java or any code here..."></textarea>
+    </div>
+    <div id="upload-panel" style="display:none">
+      <div class="drop-zone" id="dropZone">
+        <input type="file" id="fileInput" multiple onchange="addFiles(this.files)">
+        <div style="font-size:32px;margin-bottom:10px">📂</div>
+        <h3>Click to select files or drag & drop</h3>
+        <p>Any file type — .py .cs .js .ts .java .go .cpp and more</p>
+      </div>
+      <div class="file-list" id="fileList"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <span class="sec-label">Review Focus</span>
+    <div class="opt-grid">
+      <div class="opt on" onclick="tog(this)"><input type="checkbox" checked><span>Reusability & DRY</span></div>
+      <div class="opt on" onclick="tog(this)"><input type="checkbox" checked><span>Performance</span></div>
+      <div class="opt on" onclick="tog(this)"><input type="checkbox" checked><span>Security Issues</span></div>
+      <div class="opt" onclick="tog(this)"><input type="checkbox"><span>SOLID Principles</span></div>
+      <div class="opt" onclick="tog(this)"><input type="checkbox"><span>Naming Conventions</span></div>
+      <div class="opt on" onclick="tog(this)"><input type="checkbox" checked><span>Auto Refactor</span></div>
+      <div class="opt" onclick="tog(this)"><input type="checkbox"><span>Add Code Comments</span></div>
+    </div>
+    <div class="btn-row">
+      <button class="run-btn" id="runBtn" onclick="runReview()">▶ Run AI Review</button>
+      <button class="clr-btn" onclick="clearAll()">✕ Clear</button>
+    </div>
+  </div>
+
+  <div class="loader" id="loader"><div class="spin"></div><span id="loaderTxt">AI is reviewing your code…</span></div>
+  <div class="err" id="errBox"></div>
+
+  <div class="out" id="output">
+    <div class="card"><span class="sec-label">Code Health Score</span><div class="score-grid" id="scoreGrid"></div></div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+        <span class="sec-label" style="margin:0">Results</span>
+        <div class="out-tabs" id="outTabs" style="margin:0"></div>
+        <button class="copy-btn" onclick="copyJSON()">📋 Copy JSON</button>
+      </div>
+      <div id="panels"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const GROQ_URL='/api/chat';
+
+let files=[],activeTab='paste',currentResult=null;
+function switchTab(t,btn){
+  activeTab=t;
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+  document.getElementById('paste-panel').style.display=t==='paste'?'block':'none';
+  document.getElementById('upload-panel').style.display=t==='upload'?'block':'none';
+}
+function tog(el){el.classList.toggle('on');el.querySelector('input').checked=el.classList.contains('on');}
+function addFiles(fl){Array.from(fl).forEach(f=>{if(!files.find(x=>x.name===f.name))files.push(f);});renderFiles();}
+function renderFiles(){
+  document.getElementById('fileList').innerHTML=files.map((f,i)=>`
+    <div class="file-item"><span>📄 ${f.name} <span style="color:#64748b;margin-left:8px">${(f.size/1024).toFixed(1)} KB</span></span>
+    <button class="file-rm" onclick="removeFile(${i})">✕</button></div>`).join('');
+}
+function removeFile(i){files.splice(i,1);renderFiles();}
+async function readFiles(){
+  const parts=[];
+  for(const f of files){try{parts.push(`FILE: ${f.name}\n${await f.text()}`);}catch{parts.push(`FILE: ${f.name} — [unreadable]`);}}
+  return parts.join('\n\n');
+}
+function setLoading(on,msg){
+  document.getElementById('loader').classList.toggle('show',on);
+  if(msg)document.getElementById('loaderTxt').textContent=msg;
+  document.getElementById('runBtn').disabled=on;
+  document.getElementById('runBtn').textContent=on?'⏳ Analyzing…':'▶ Run AI Review';
+}
+function showErr(msg){const el=document.getElementById('errBox');el.innerHTML='❌ <strong>Error:</strong> '+msg;el.classList.add('show');}
+
+async function runReview(){
+  const code=document.getElementById('code').value.trim();
+  if(activeTab==='paste'&&!code){alert('Paste some code first.');return;}
+  if(activeTab==='upload'&&!files.length){alert('Upload at least one file.');return;}
+
+  document.getElementById('errBox').classList.remove('show');
+  document.getElementById('output').classList.remove('show');
+  setLoading(true,'AI is reviewing your code…');
+
+  try{
+    const src=activeTab==='upload'?await readFiles():code;
+    const focus=[...document.querySelectorAll('.opt.on span')].map(el=>el.textContent).join(', ');
+    const wantComments=[...document.querySelectorAll('.opt.on span')].some(el=>el.textContent.includes('Comments'));
+
+    const prompt=`You are a senior software engineer. Review this code.
+Focus: ${focus}
+CODE:
+\`\`\`
+${src.substring(0,12000)}
+\`\`\`
+${wantComments?'Add professional inline comments. Put full commented code in "commented_code" field.':''}
+Respond ONLY with raw JSON (no markdown fences, no extra text):
+{"scores":{"overall":72,"reusability":65,"performance":80,"security":70},"summary":"2-3 sentence overview","critical":[{"title":"...","description":"...","fix":"..."}],"warnings":[{"title":"...","description":"...","fix":"..."}],"improvements":[{"title":"...","description":"...","fix":"..."}],"refactored":"full corrected code"${wantComments?',"commented_code":"full code with comments"':''},"positives":["strength 1","strength 2"]}`;
+
+    const res=await fetch(GROQ_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[{role:'user',content:prompt}],max_tokens:4000,temperature:.2})
+    });
+    const data=await res.json();
+    if(!res.ok||data.error)throw new Error(data.error?.message||'API error');
+    const raw=data.choices?.[0]?.message?.content||'';
+    if(!raw)throw new Error('Empty response.');
+
+    let parsed;
+    const clean=raw.replace(/```json|```/gm,'').trim();
+    try{parsed=JSON.parse(clean);}
+    catch{const m=clean.match(/\{[\s\S]*\}/);if(!m)throw new Error('Bad JSON response');parsed=JSON.parse(m[0]);}
+    currentResult=parsed;setLoading(false);renderOutput(parsed);
+  }catch(e){setLoading(false);showErr(e.message);}
+}
+
+function scoreCol(v){return v>=80?'#4ade80':v>=55?'#fbbf24':'#f87171';}
+function renderOutput(r){
+  document.getElementById('output').classList.add('show');
+  const sc=r.scores||{};
+  document.getElementById('scoreGrid').innerHTML=[['Overall',sc.overall||0],['Reusability',sc.reusability||0],['Performance',sc.performance||0],['Security',sc.security||0]].map(([l,v])=>{
+    const c=scoreCol(v);
+    return `<div class="score-card"><div class="score-val" style="color:${c}">${v}<span style="font-size:14px">%</span></div><div class="prog"><div class="prog-fill" style="width:${v}%;background:${c}"></div></div><div class="score-lbl">${l}</div></div>`;
+  }).join('');
+
+  const tabs=[{id:'review',label:'📋 Review'}];
+  if(r.commented_code)tabs.push({id:'comments',label:'💬 Commented'});
+  if(r.refactored)tabs.push({id:'refactored',label:'🔧 Refactored'});
+  document.getElementById('outTabs').innerHTML=tabs.map((t,i)=>`<button class="out-tab ${i===0?'active':''}" onclick="switchOut('${t.id}',this)">${t.label}</button>`).join('');
+
+  let html='';
+  if(r.summary)html+=`<div class="summary-box">${esc(r.summary)}</div>`;
+  if(r.critical?.length)html+=`<div class="shdr">🔴 Critical (${r.critical.length})</div>`+r.critical.map(i=>issueHtml(i,'#f87171')).join('');
+  if(r.warnings?.length)html+=`<div class="shdr">🟡 Warnings (${r.warnings.length})</div>`+r.warnings.map(i=>issueHtml(i,'#fbbf24')).join('');
+  if(r.improvements?.length)html+=`<div class="shdr">🔵 Improvements (${r.improvements.length})</div>`+r.improvements.map(i=>issueHtml(i,'#38bdf8')).join('');
+  if(r.positives?.length)html+=`<div class="shdr">✅ What's Good</div>`+r.positives.map(p=>`<div class="positive">${esc(p)}</div>`).join('');
+
+  const cHtml=r.commented_code?`<p style="font-size:13px;color:#94a3b8;margin-bottom:10px;">Professional comments added to every function and class.</p><button class="copy-btn" onclick="navigator.clipboard.writeText(currentResult.commented_code).then(()=>alert('Copied!'))">📋 Copy</button><pre class="icode" style="margin-top:10px;max-height:500px;overflow-y:auto">${esc(r.commented_code)}</pre>`:'';
+  const rHtml=r.refactored?`<p style="font-size:13px;color:#94a3b8;margin-bottom:10px;">Full refactored version with all issues fixed.</p><button class="copy-btn" onclick="navigator.clipboard.writeText(currentResult.refactored).then(()=>alert('Copied!'))">📋 Copy</button><pre class="icode" style="margin-top:10px;max-height:500px;overflow-y:auto">${esc(r.refactored)}</pre>`:'';
+
+  document.getElementById('panels').innerHTML=`
+    <div class="out-panel show" id="panel-review">${html}</div>
+    <div class="out-panel" id="panel-comments">${cHtml}</div>
+    <div class="out-panel" id="panel-refactored">${rHtml}</div>`;
+}
+
+function switchOut(id,btn){
+  document.querySelectorAll('.out-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.out-panel').forEach(p=>p.classList.remove('show'));
+  btn.classList.add('active');document.getElementById('panel-'+id).classList.add('show');
+}
+function issueHtml(i,col){return `<div class="issue" style="border-color:${col}"><div class="ititle" style="color:${col}">${esc(i.title||'')}</div><div class="ibody">${esc(i.description||'')}${i.fix?`<pre class="icode">${esc(i.fix)}</pre>`:''}</div></div>`;}
+function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function copyJSON(){navigator.clipboard.writeText(JSON.stringify(currentResult,null,2)).then(()=>alert('JSON copied!'));}
+function clearAll(){
+  document.getElementById('code').value='';files=[];renderFiles();
+  document.getElementById('output').classList.remove('show');
+  document.getElementById('errBox').classList.remove('show');
+  document.getElementById('runBtn').disabled=false;
+  document.getElementById('runBtn').textContent='▶ Run AI Review';
+}
+
+const dz=document.getElementById('dropZone');
+if(dz){
+  dz.addEventListener('dragover',e=>{e.preventDefault();dz.style.borderColor='#22d3ee';});
+  dz.addEventListener('dragleave',()=>{dz.style.borderColor='#334155';});
+  dz.addEventListener('drop',async e=>{
+    e.preventDefault();dz.style.borderColor='#334155';
+    const all=[];
+    async function traverse(entry){
+      if(!entry)return;
+      if(entry.isFile)await new Promise(r=>entry.file(f=>{all.push(f);r()}));
+      else if(entry.isDirectory){const rd=entry.createReader();await new Promise(r=>rd.readEntries(async es=>{for(const en of es)await traverse(en);r()}));}
+    }
+    for(const item of[...e.dataTransfer.items]){const en=item.webkitGetAsEntry?.();if(en)await traverse(en);else if(item.getAsFile)all.push(item.getAsFile());}
+    addFiles(all);
+  });
+}
+</script>
+</body>
+</html>

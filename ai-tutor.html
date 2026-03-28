@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Coding Tutor — Parth.ai</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230f172a'/><rect x='25' y='30' width='50' height='45' rx='10' fill='none' stroke='%2322d3ee' stroke-width='4'/><circle cx='38' cy='48' r='5' fill='%2322d3ee'/><circle cx='62' cy='48' r='5' fill='%2322d3ee'/><rect x='38' y='62' width='24' height='4' rx='2' fill='%234ade80'/></svg>" type="image/svg+xml">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0a0a0f;--bg2:#0f172a;--bg3:#1e293b;--cyan:#22d3ee;--green:#4ade80;--blue:#38bdf8;--purple:#a78bfa;--yellow:#fbbf24;--red:#f87171;--text:#e2e8f0;--muted:#64748b}
+body{background:var(--bg);color:var(--text);font-family:system-ui,sans-serif;margin:0}
+nav{background:var(--bg2);border-bottom:1px solid var(--bg3);padding:12px 24px;display:flex;align-items:center;justify-content:space-between}
+.logo{color:var(--cyan);font-weight:700;font-size:14px}.logo b{color:#f1f5f9}
+.xp{font-size:11px;padding:3px 10px;border-radius:12px;background:rgba(74,222,128,.1);color:var(--green);border:1px solid rgba(74,222,128,.2)}
+.page{display:flex;height:calc(100vh - 49px)}
+.sidebar{width:230px;min-width:230px;background:var(--bg2);border-right:1px solid var(--bg3);overflow-y:auto;padding:14px 10px}
+.sb-hdr{font-size:10px;color:var(--cyan);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;padding:0 4px}
+.topic{padding:9px 10px;border-radius:8px;cursor:pointer;margin-bottom:3px;border:1px solid transparent;transition:all .15s}
+.topic:hover{background:#070b13;border-color:var(--bg3)}
+.topic.active{background:rgba(34,211,238,.07);border-color:rgba(34,211,238,.22)}
+.tn{font-size:12px;font-weight:600;color:var(--text)}
+.topic.active .tn{color:var(--cyan)}
+.tm{font-size:10px;color:var(--muted);margin-top:2px;display:flex;align-items:center;gap:5px}
+.tbar{flex:1;height:2px;background:var(--bg3);border-radius:1px;overflow:hidden}
+.tbar-fill{height:100%;background:var(--green);border-radius:1px}
+.weak-badge{font-size:9px;padding:1px 5px;border-radius:3px;background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.2)}
+.perf-bar{display:flex;align-items:center;gap:5px;margin-top:3px}
+.perf-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.middle{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.prob{padding:18px 22px;border-bottom:1px solid var(--bg3);background:var(--bg2);flex-shrink:0}
+.prob-meta{display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
+.diff{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:700}
+.easy{background:rgba(74,222,128,.12);color:var(--green);border:1px solid rgba(74,222,128,.25)}
+.med{background:rgba(251,191,36,.12);color:var(--yellow);border:1px solid rgba(251,191,36,.25)}
+.hard{background:rgba(248,113,113,.12);color:var(--red);border:1px solid rgba(248,113,113,.25)}
+.qn{font-size:11px;color:var(--muted)}
+.pt{font-size:16px;font-weight:700;color:#f1f5f9;margin-bottom:7px}
+.pd{font-size:12px;color:var(--muted);line-height:1.75;margin-bottom:10px}
+.ex{background:#070b13;border-radius:7px;padding:10px 12px;font-size:12px;border:1px solid var(--bg3);font-family:'Courier New',monospace}
+.ex-lbl{font-size:9px;color:var(--cyan);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px}
+.ex-in{color:#94a3b8}.ex-out{color:var(--green)}
+.welcome-box{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 32px;text-align:center;flex:1}
+.welcome-box h2{font-size:18px;color:#f1f5f9;margin-bottom:8px}
+.welcome-box p{font-size:13px;color:var(--muted);line-height:1.7;max-width:300px}
+.code-wrap{flex:1;display:flex;flex-direction:column;padding:14px 22px;overflow:hidden;min-height:0}
+.toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px}
+.tl{display:flex;gap:6px;align-items:center}
+.lbadge{font-size:10px;padding:3px 9px;border-radius:4px;background:rgba(34,211,238,.08);color:var(--cyan);border:1px solid rgba(34,211,238,.2)}
+.timer{font-size:11px;color:var(--muted)}
+.tr{display:flex;gap:6px}
+.btn{padding:7px 14px;border-radius:6px;font-size:11px;font-weight:700;border:none;cursor:pointer;transition:all .2s}
+.btn-g{background:var(--green);color:#0a0a0f}
+.btn-p{background:rgba(167,139,250,.1);color:var(--purple);border:1px solid rgba(167,139,250,.2)}
+.btn-h{background:rgba(251,191,36,.1);color:var(--yellow);border:1px solid rgba(251,191,36,.2)}
+.btn-r{background:rgba(248,113,113,.1);color:var(--red);border:1px solid rgba(248,113,113,.2)}
+.editor{flex:1;background:#040810;border:1px solid var(--bg3);border-radius:8px;padding:12px;font-size:13px;color:var(--green);font-family:'Courier New',monospace;resize:none;line-height:1.8;outline:none;min-height:120px}
+.editor:focus{border-color:var(--cyan)}
+.run-out{background:#040810;border:1px solid var(--bg3);border-radius:7px;padding:9px 12px;margin-top:7px;font-size:12px;font-family:'Courier New',monospace;display:none;max-height:100px;overflow-y:auto;white-space:pre-wrap}
+.run-out.show{display:block}
+.chat{width:300px;min-width:300px;background:var(--bg2);border-left:1px solid var(--bg3);display:flex;flex-direction:column;overflow:hidden}
+.chat-hdr{padding:12px 14px;border-bottom:1px solid var(--bg3);display:flex;align-items:center;gap:8px;flex-shrink:0}
+.av{width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,rgba(74,222,128,.2),rgba(34,211,238,.2));border:1px solid rgba(74,222,128,.3);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.aname{font-size:12px;font-weight:700;color:#f1f5f9}
+.astatus{font-size:10px;color:var(--green)}
+.stuck{display:none;margin:0 12px 6px;background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.2);border-radius:7px;padding:8px 10px;font-size:11px;color:var(--yellow);flex-shrink:0}
+.stuck.show{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.msgs{flex:1;overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.msg{display:flex;gap:6px;align-items:flex-start}
+.msg.user{flex-direction:row-reverse}
+.mav{width:22px;height:22px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;margin-top:2px}
+.bbl{border-radius:9px;padding:8px 11px;max-width:calc(100% - 30px);font-size:12px;line-height:1.65}
+.msg.ai .bbl{background:#070b13;color:var(--text);border:1px solid var(--bg3)}
+.msg.user .bbl{background:rgba(34,211,238,.09);color:var(--text);border:1px solid rgba(34,211,238,.18)}
+.chips{padding:7px 12px;border-top:1px solid var(--bg3);display:flex;flex-wrap:wrap;gap:5px;flex-shrink:0}
+.chip{font-size:10px;padding:3px 9px;border-radius:10px;background:rgba(74,222,128,.07);color:var(--green);border:1px solid rgba(74,222,128,.15);cursor:pointer;transition:all .2s;white-space:nowrap}
+.chip:hover{background:rgba(74,222,128,.15)}
+.inp-row{display:flex;gap:6px;padding:8px 12px;border-top:1px solid var(--bg3);flex-shrink:0}
+.cinp{flex:1;background:#070b13;border:1px solid var(--bg3);border-radius:6px;padding:8px 10px;font-size:12px;color:var(--text);font-family:system-ui;resize:none;outline:none}
+.cinp:focus{border-color:var(--cyan)}
+.sbtn{background:var(--cyan);color:#0a0a0f;border:none;border-radius:6px;padding:8px 12px;cursor:pointer;font-size:15px;font-weight:700}
+@keyframes dp{0%,80%,100%{transform:scale(.5);opacity:.3}40%{transform:scale(1);opacity:1}}
+.dots span{width:5px;height:5px;border-radius:50%;background:var(--green);display:inline-block;animation:dp .8s ease-in-out infinite;margin:0 2px}
+.dots span:nth-child(2){animation-delay:.16s}.dots span:nth-child(3){animation-delay:.32s}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo"><b>Parth</b>.ai — AI Coding Tutor</div>
+  <div style="display:flex;gap:10px;align-items:center">
+    <span style="font-size:11px;color:var(--yellow)">🔥 <span id="streak">1</span> day</span>
+    <span class="xp">⭐ <span id="xpVal">0</span> XP</span>
+  </div>
+</nav>
+
+<div class="page">
+  <div class="sidebar">
+    <div class="sb-hdr">Topics</div>
+    <div id="topicList"></div>
+    <div style="margin-top:16px;padding:10px;background:#070b13;border-radius:8px;border:1px solid var(--bg3);">
+      <div style="font-size:10px;color:var(--cyan);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Your Weak Areas</div>
+      <div id="weakAreas" style="font-size:11px;color:var(--muted);">Complete some questions to see your weak areas.</div>
+    </div>
+  </div>
+  <div class="middle">
+    <div class="prob" id="probArea">
+      <div class="welcome-box">
+        <div style="font-size:44px;margin-bottom:14px">🧠</div>
+        <h2>Adaptive AI Tutor</h2>
+        <p>Pick a topic. I'll track where you struggle and serve more questions from your weak points automatically. 10–20 questions per topic!</p>
+      </div>
+    </div>
+    <div class="code-wrap" id="codeWrap" style="display:none">
+      <div class="toolbar">
+        <div class="tl">
+          <span class="lbadge">Python</span>
+          <span class="timer" id="timer">⏱ 0:00</span>
+          <span id="qProgress" style="font-size:10px;color:var(--muted)"></span>
+        </div>
+        <div class="tr">
+          <button class="btn btn-h" onclick="giveHint()">💡 Hint</button>
+          <button class="btn btn-g" onclick="submitCode()">▶ Submit</button>
+          <button class="btn btn-p" onclick="nextQ()">Next →</button>
+          <button class="btn btn-r" onclick="skipQ()">Skip</button>
+        </div>
+      </div>
+      <textarea class="editor" id="editor" oninput="onType()" placeholder="# Write your solution here..."></textarea>
+      <div class="run-out" id="runOut"></div>
+    </div>
+  </div>
+  <div class="chat">
+    <div class="chat-hdr">
+      <div class="av">🤖</div>
+      <div><div class="aname">AI Tutor</div><div class="astatus">● Adaptive · Watching you</div></div>
+    </div>
+    <div class="stuck" id="stuckBar">
+      <span>⏱️ Stuck? I can help!</span>
+      <div style="display:flex;gap:5px">
+        <div class="chip" onclick="autoHelp()">Yes!</div>
+        <div class="chip" onclick="document.getElementById('stuckBar').classList.remove('show')">✕</div>
+      </div>
+    </div>
+    <div class="msgs" id="msgs"></div>
+    <div class="chips" id="chips"></div>
+    <div class="inp-row">
+      <textarea class="cinp" id="cinp" rows="2" placeholder="Ask anything..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();send()}"></textarea>
+      <button class="sbtn" onclick="send()">↑</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const GROQ_URL='/api/chat';
+
+let perf={};
+let curTopic=null,curQIdx=0,xp=0,secs=0,timerInt=null,stuckInt=null,lastType=Date.now();
+let adaptiveQueue=[],sessionResults=[];
+
+const QS={
+  'Arrays & Hashing':[
+    {t:'Two Sum',d:'Easy',desc:'Given an array nums and a target, return indices of the two numbers that add up to target.',inp:'nums=[2,7,11,15], target=9',out:'[0,1]',h1:'Use a dictionary to remember values you\'ve seen.',h2:'For each number, check if (target - number) is already in your dictionary.',start:'def twoSum(nums, target):\n    pass',sol:'def twoSum(nums,target):\n    seen={}\n    for i,n in enumerate(nums):\n        if target-n in seen:return [seen[target-n],i]\n        seen[n]=i'},
+    {t:'Contains Duplicate',d:'Easy',desc:'Given an integer array, return true if any value appears at least twice.',inp:'nums=[1,2,3,1]',out:'True',h1:'A set stores only unique values.',h2:'len(nums) != len(set(nums)) means duplicate exists.',start:'def containsDuplicate(nums):\n    pass',sol:'def containsDuplicate(nums):\n    return len(nums)!=len(set(nums))'},
+    {t:'Valid Anagram',d:'Easy',desc:'Return true if t is an anagram of s.',inp:'s="anagram", t="nagaram"',out:'True',h1:'Count character frequencies in both strings.',h2:'Counter(s)==Counter(t) works perfectly.',start:'def isAnagram(s, t):\n    pass',sol:'from collections import Counter\ndef isAnagram(s,t):return Counter(s)==Counter(t)'},
+    {t:'Group Anagrams',d:'Medium',desc:'Group strings that are anagrams of each other.',inp:'strs=["eat","tea","tan","ate","nat","bat"]',out:'[["bat"],["nat","tan"],["ate","eat","tea"]]',h1:'Sorted version of each word is the key.',h2:'Use defaultdict(list) with tuple(sorted(word)) as key.',start:'def groupAnagrams(strs):\n    pass',sol:'from collections import defaultdict\ndef groupAnagrams(strs):\n    d=defaultdict(list)\n    for s in strs:d[tuple(sorted(s))].append(s)\n    return list(d.values())'},
+    {t:'Top K Frequent Elements',d:'Medium',desc:'Return the k most frequent elements.',inp:'nums=[1,1,1,2,2,3], k=2',out:'[1,2]',h1:'Count frequencies with Counter.',h2:'Use Counter.most_common(k).',start:'def topKFrequent(nums, k):\n    pass',sol:'from collections import Counter\ndef topKFrequent(nums,k):\n    return [x for x,_ in Counter(nums).most_common(k)]'},
+    {t:'Product of Array Except Self',d:'Medium',desc:'Return array where each element is product of all others. No division.',inp:'nums=[1,2,3,4]',out:'[24,12,8,6]',h1:'Compute prefix products left to right, then suffix right to left.',h2:'res[i] = left_product[i] * right_product[i].',start:'def productExceptSelf(nums):\n    pass',sol:'def productExceptSelf(nums):\n    n=len(nums);res=[1]*n;l=1\n    for i in range(n):res[i]=l;l*=nums[i]\n    r=1\n    for i in range(n-1,-1,-1):res[i]*=r;r*=nums[i]\n    return res'},
+    {t:'Longest Consecutive Sequence',d:'Medium',desc:'Find the length of the longest consecutive sequence.',inp:'nums=[100,4,200,1,3,2]',out:'4',h1:'Use a set. Only start counting from sequence starts.',h2:'A number is a start if num-1 is not in the set.',start:'def longestConsecutive(nums):\n    pass',sol:'def longestConsecutive(nums):\n    s=set(nums);best=0\n    for n in s:\n        if n-1 not in s:\n            l=1\n            while n+l in s:l+=1\n            best=max(best,l)\n    return best'},
+  ],
+  'Two Pointers':[
+    {t:'Valid Palindrome',d:'Easy',desc:'Return true if string reads same forward and backward (ignore non-alphanumeric).',inp:'"A man, a plan, a canal: Panama"',out:'True',h1:'Two pointers from both ends, skip non-alphanumeric.',h2:'Compare s[l].lower() with s[r].lower().',start:'def isPalindrome(s):\n    pass',sol:'def isPalindrome(s):\n    l,r=0,len(s)-1\n    while l<r:\n        while l<r and not s[l].isalnum():l+=1\n        while l<r and not s[r].isalnum():r-=1\n        if s[l].lower()!=s[r].lower():return False\n        l+=1;r-=1\n    return True'},
+    {t:'3Sum',d:'Medium',desc:'Find all unique triplets that sum to zero.',inp:'nums=[-1,0,1,2,-1,-4]',out:'[[-1,-1,2],[-1,0,1]]',h1:'Sort first, then fix one element and use two pointers.',h2:'Skip duplicates by checking if current == previous.',start:'def threeSum(nums):\n    pass',sol:'def threeSum(nums):\n    nums.sort();res=[]\n    for i,n in enumerate(nums):\n        if i>0 and n==nums[i-1]:continue\n        l,r=i+1,len(nums)-1\n        while l<r:\n            s=n+nums[l]+nums[r]\n            if s==0:res.append([n,nums[l],nums[r]]);l+=1\n            elif s<0:l+=1\n            else:r-=1\n    return res'},
+    {t:'Container With Most Water',d:'Medium',desc:'Find two lines that form container holding most water.',inp:'height=[1,8,6,2,5,4,8,3,7]',out:'49',h1:'Two pointers. Area = min(h[l],h[r]) * (r-l).',h2:'Move the pointer pointing to the shorter line inward.',start:'def maxArea(height):\n    pass',sol:'def maxArea(height):\n    l,r,best=0,len(height)-1,0\n    while l<r:\n        best=max(best,min(height[l],height[r])*(r-l))\n        if height[l]<height[r]:l+=1\n        else:r-=1\n    return best'},
+    {t:'Trapping Rain Water',d:'Hard',desc:'Given elevation map, compute how much water it can trap.',inp:'height=[0,1,0,2,1,0,1,3,2,1,2,1]',out:'6',h1:'At each position, water = min(max_left, max_right) - height[i].',h2:'Use two pointers, track left_max and right_max.',start:'def trap(height):\n    pass',sol:'def trap(height):\n    l,r=0,len(height)-1;lm=rm=res=0\n    while l<r:\n        if height[l]<height[r]:\n            if height[l]>=lm:lm=height[l]\n            else:res+=lm-height[l];l+=1\n        else:\n            if height[r]>=rm:rm=height[r]\n            else:res+=rm-height[r];r-=1\n    return res'},
+  ],
+  'Sliding Window':[
+    {t:'Best Time to Buy Stock',d:'Easy',desc:'Return max profit from one buy and one sell.',inp:'prices=[7,1,5,3,6,4]',out:'5',h1:'Track minimum price seen so far.',h2:'profit = current_price - min_price. Track max profit.',start:'def maxProfit(prices):\n    pass',sol:'def maxProfit(prices):\n    minP,maxP=float("inf"),0\n    for p in prices:minP=min(minP,p);maxP=max(maxP,p-minP)\n    return maxP'},
+    {t:'Longest Substring Without Repeating',d:'Medium',desc:'Find length of longest substring without repeating characters.',inp:'s="abcabcbb"',out:'3',h1:'Sliding window with a set.',h2:'Expand right, shrink left when duplicate found.',start:'def lengthOfLongestSubstring(s):\n    pass',sol:'def lengthOfLongestSubstring(s):\n    seen,l,res=set(),0,0\n    for r in range(len(s)):\n        while s[r] in seen:seen.remove(s[l]);l+=1\n        seen.add(s[r]);res=max(res,r-l+1)\n    return res'},
+    {t:'Minimum Window Substring',d:'Hard',desc:'Find minimum window in s containing all chars of t.',inp:'s="ADOBECODEBANC", t="ABC"',out:'"BANC"',h1:'Sliding window. Expand right until valid, then shrink left.',h2:'Track have/need counts. When have==need, record and shrink.',start:'def minWindow(s, t):\n    pass',sol:'from collections import Counter\ndef minWindow(s,t):\n    need=Counter(t);have=0;want=len(need);window={};res="";resL=float("inf");l=0\n    for r,c in enumerate(s):\n        window[c]=window.get(c,0)+1\n        if c in need and window[c]==need[c]:have+=1\n        while have==want:\n            if r-l+1<resL:resL=r-l+1;res=s[l:r+1]\n            window[s[l]]-=1\n            if s[l] in need and window[s[l]]<need[s[l]]:have-=1\n            l+=1\n    return res'},
+  ],
+  'Stack & Queue':[
+    {t:'Valid Parentheses',d:'Easy',desc:'Return true if brackets are correctly opened and closed.',inp:'s="()[]{}"',out:'True',h1:'Stack: push open brackets, pop on close.',h2:'If stack top != matching open for close char, return False.',start:'def isValid(s):\n    pass',sol:'def isValid(s):\n    st,m=[],{")":"(","]":"[","}":"{"}\n    for c in s:\n        if c in m:\n            if not st or st[-1]!=m[c]:return False\n            st.pop()\n        else:st.append(c)\n    return not st'},
+    {t:'Min Stack',d:'Medium',desc:'Design a stack that supports push, pop, top, and getMin in O(1).',inp:'MinStack operations',out:'correct min',h1:'Store (value, current_min) pairs in the stack.',h2:'When pushing x, min = min(x, stack[-1][1]).',start:'class MinStack:\n    def __init__(self): pass\n    def push(self,val): pass\n    def pop(self): pass\n    def top(self): pass\n    def getMin(self): pass',sol:'class MinStack:\n    def __init__(self):self.s=[]\n    def push(self,v):self.s.append((v,min(v,self.s[-1][1] if self.s else v)))\n    def pop(self):self.s.pop()\n    def top(self):return self.s[-1][0]\n    def getMin(self):return self.s[-1][1]'},
+    {t:'Daily Temperatures',d:'Medium',desc:'Return days to wait for warmer temperature for each day.',inp:'temperatures=[73,74,75,71,69,72,76,73]',out:'[1,1,4,2,1,1,0,0]',h1:'Use a monotonic decreasing stack storing indices.',h2:'When a warmer day is found, pop and compute difference.',start:'def dailyTemperatures(temperatures):\n    pass',sol:'def dailyTemperatures(t):\n    res=[0]*len(t);st=[]\n    for i,v in enumerate(t):\n        while st and t[st[-1]]<v:j=st.pop();res[j]=i-j\n        st.append(i)\n    return res'},
+  ],
+  'Binary Search':[
+    {t:'Binary Search',d:'Easy',desc:'Search sorted array for target. Return index or -1. O(log n).',inp:'nums=[-1,0,3,5,9,12], target=9',out:'4',h1:'Keep left/right pointers, check mid.',h2:'If mid<target: l=mid+1. If mid>target: r=mid-1.',start:'def search(nums, target):\n    pass',sol:'def search(nums,target):\n    l,r=0,len(nums)-1\n    while l<=r:\n        m=(l+r)//2\n        if nums[m]==target:return m\n        elif nums[m]<target:l=m+1\n        else:r=m-1\n    return -1'},
+    {t:'Koko Eating Bananas',d:'Medium',desc:'Find minimum eating speed k so Koko can eat all piles within h hours.',inp:'piles=[3,6,7,11], h=8',out:'4',h1:'Binary search on the answer (eating speed).',h2:'For each speed k, total hours = sum(ceil(pile/k)).',start:'def minEatingSpeed(piles, h):\n    pass',sol:'import math\ndef minEatingSpeed(piles,h):\n    l,r=1,max(piles)\n    while l<r:\n        m=(l+r)//2\n        if sum(math.ceil(p/m) for p in piles)<=h:r=m\n        else:l=m+1\n    return l'},
+    {t:'Search in Rotated Sorted Array',d:'Medium',desc:'Search target in rotated sorted array. O(log n).',inp:'nums=[4,5,6,7,0,1,2], target=0',out:'4',h1:'Determine which half is sorted, then check if target is in it.',h2:'If left sorted and target in [nums[l],nums[m]], go left.',start:'def search(nums, target):\n    pass',sol:'def search(nums,target):\n    l,r=0,len(nums)-1\n    while l<=r:\n        m=(l+r)//2\n        if nums[m]==target:return m\n        if nums[l]<=nums[m]:\n            if nums[l]<=target<nums[m]:r=m-1\n            else:l=m+1\n        else:\n            if nums[m]<target<=nums[r]:l=m+1\n            else:r=m-1\n    return -1'},
+  ],
+  'Linked Lists':[
+    {t:'Reverse Linked List',d:'Easy',desc:'Reverse a singly linked list.',inp:'head=[1,2,3,4,5]',out:'[5,4,3,2,1]',h1:'Three variables: prev, curr, next.',h2:'prev=None; while curr: save next, point curr.next=prev, advance.',start:'def reverseList(head):\n    pass',sol:'def reverseList(head):\n    prev=None\n    while head:nxt=head.next;head.next=prev;prev=head;head=nxt\n    return prev'},
+    {t:'Merge Two Sorted Lists',d:'Easy',desc:'Merge two sorted linked lists into one sorted list.',inp:'l1=[1,2,4], l2=[1,3,4]',out:'[1,1,2,3,4,4]',h1:'Use a dummy node. Compare heads and attach smaller.',h2:'After loop, attach remaining non-null list.',start:'def mergeTwoLists(list1, list2):\n    pass',sol:'def mergeTwoLists(l1,l2):\n    dummy=type("N",(),({"val":0,"next":None}))()\n    cur=dummy\n    while l1 and l2:\n        if l1.val<=l2.val:cur.next=l1;l1=l1.next\n        else:cur.next=l2;l2=l2.next\n        cur=cur.next\n    cur.next=l1 or l2;return dummy.next'},
+    {t:'LRU Cache',d:'Medium',desc:'Design LRU cache with O(1) get and put.',inp:'capacity=2, operations',out:'correct eviction',h1:'Combine hashmap + doubly linked list.',h2:'Use OrderedDict — move_to_end on access, popitem(last=False) on evict.',start:'class LRUCache:\n    def __init__(self, capacity): pass\n    def get(self, key): pass\n    def put(self, key, value): pass',sol:'from collections import OrderedDict\nclass LRUCache:\n    def __init__(self,cap):self.cap=cap;self.cache=OrderedDict()\n    def get(self,k):\n        if k not in self.cache:return -1\n        self.cache.move_to_end(k);return self.cache[k]\n    def put(self,k,v):\n        if k in self.cache:self.cache.move_to_end(k)\n        self.cache[k]=v\n        if len(self.cache)>self.cap:self.cache.popitem(last=False)'},
+  ],
+  'Dynamic Programming':[
+    {t:'Climbing Stairs',d:'Easy',desc:'Climb 1 or 2 steps. How many distinct ways to reach top of n stairs?',inp:'n=5',out:'8',h1:'ways(n) = ways(n-1) + ways(n-2). It\'s Fibonacci!',h2:'Base: n=1→1, n=2→2. Iterate from 3 to n.',start:'def climbStairs(n):\n    pass',sol:'def climbStairs(n):\n    if n<=2:return n\n    a,b=1,2\n    for _ in range(3,n+1):a,b=b,a+b\n    return b'},
+    {t:'House Robber',d:'Medium',desc:'Rob houses, cannot rob adjacent. Max money.',inp:'nums=[2,7,9,3,1]',out:'12',h1:'At each house: rob it + dp[i-2], or skip (dp[i-1]).',h2:'dp[i] = max(nums[i]+dp[i-2], dp[i-1]).',start:'def rob(nums):\n    pass',sol:'def rob(nums):\n    a,b=0,0\n    for n in nums:a,b=b,max(b,a+n)\n    return b'},
+    {t:'Coin Change',d:'Medium',desc:'Find minimum coins to make amount. Return -1 if impossible.',inp:'coins=[1,5,11], amount=15',out:'3',h1:'dp[i] = min coins to make amount i.',h2:'dp[i] = min(dp[i], dp[i-coin]+1) for each coin.',start:'def coinChange(coins, amount):\n    pass',sol:'def coinChange(coins,amount):\n    dp=[float("inf")]*(amount+1);dp[0]=0\n    for i in range(1,amount+1):\n        for c in coins:\n            if c<=i:dp[i]=min(dp[i],dp[i-c]+1)\n    return dp[amount] if dp[amount]!=float("inf") else -1'},
+    {t:'Longest Increasing Subsequence',d:'Medium',desc:'Return the length of the longest strictly increasing subsequence.',inp:'nums=[10,9,2,5,3,7,101,18]',out:'4',h1:'dp[i] = LIS ending at index i.',h2:'dp[i] = 1 + max(dp[j] for j<i if nums[j]<nums[i]).',start:'def lengthOfLIS(nums):\n    pass',sol:'def lengthOfLIS(nums):\n    dp=[1]*len(nums)\n    for i in range(len(nums)):\n        for j in range(i):\n            if nums[j]<nums[i]:dp[i]=max(dp[i],dp[j]+1)\n    return max(dp)'},
+  ],
+};
+
+function initPerf(){Object.keys(QS).forEach(t=>{if(!perf[t])perf[t]={correct:0,wrong:0,skipped:0,times:[],score:100};});}
+function updatePerf(topic,correct,skipped,timeTaken){
+  const p=perf[topic];
+  if(correct)p.correct++;else if(skipped)p.skipped++;else p.wrong++;
+  p.times.push(timeTaken);
+  const avgTime=p.times.reduce((a,b)=>a+b,0)/p.times.length;
+  const total=p.correct+p.wrong+p.skipped;
+  p.score=total>0?Math.round((p.correct/total)*100-(avgTime>60?10:0)):100;
+  p.score=Math.max(0,Math.min(100,p.score));
+  updateWeakAreas();
+}
+function getWeakTopics(){return Object.entries(perf).filter(([,p])=>p.correct+p.wrong+p.skipped>0).sort((a,b)=>a[1].score-b[1].score).slice(0,3).map(([t])=>t);}
+function updateWeakAreas(){
+  const weak=getWeakTopics();const el=document.getElementById('weakAreas');
+  if(!weak.length){el.textContent='Complete some questions to see your weak areas.';return;}
+  el.innerHTML=weak.map(t=>{const p=perf[t];const pct=p.score;const col=pct<40?'var(--red)':pct<70?'var(--yellow)':'var(--green)';
+    return `<div style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;margin-bottom:3px;"><span style="color:var(--text);font-size:11px;">${t}</span><span style="color:${col};font-size:11px;font-weight:700;">${pct}%</span></div><div style="height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;"><div style="height:100%;width:${pct}%;background:${col};border-radius:2px;"></div></div></div>`;
+  }).join('');
+}
+function buildAdaptiveQueue(topic){
+  const q=[...QS[topic].map((_,i)=>i)];
+  const p=perf[topic];
+  if(p&&p.wrong>p.correct)q.push(...QS[topic].map((_,i)=>i));
+  for(let i=q.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[q[i],q[j]]=[q[j],q[i]];}
+  return q;
+}
+
+function renderSidebar(){
+  document.getElementById('topicList').innerHTML=Object.keys(QS).map(t=>{
+    const p=perf[t]||{correct:0,wrong:0,score:100};const total=QS[t].length;const done=p.correct+p.wrong;
+    const pct=Math.round(done/total*100);const isWeak=getWeakTopics().includes(t);
+    return `<div class="topic${curTopic===t?' active':''}" onclick="pick('${t.replace(/'/g,"\\'")}')">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div class="tn">${t}</div>${isWeak?'<span class="weak-badge">WEAK</span>':''}
+      </div>
+      <div class="tm"><span>${done}/${total}</span><div class="tbar"><div class="tbar-fill" style="width:${pct}%"></div></div></div>
+      <div class="perf-bar">
+        <div class="perf-dot" style="background:var(--green)"></div><span style="font-size:9px;color:var(--muted)">${p.correct}✓</span>
+        <div class="perf-dot" style="background:var(--red)"></div><span style="font-size:9px;color:var(--muted)">${p.wrong}✗</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function pick(t){
+  curTopic=t;adaptiveQueue=buildAdaptiveQueue(t);curQIdx=0;
+  renderSidebar();showQ();
+  bot(`📚 <strong>${t}</strong> — ${QS[t].length} questions loaded! Tracking your performance 🎯`);
+  setChips(['What does this ask?','Give me a hint','Explain the concept']);
+}
+
+function showQ(){
+  if(!curTopic)return;
+  const idx=adaptiveQueue[curQIdx%adaptiveQueue.length];
+  const q=QS[curTopic][idx];if(!q)return;
+  const diffCls=q.d==='Easy'?'easy':q.d==='Medium'?'med':'hard';
+  document.getElementById('probArea').innerHTML=`
+    <div class="prob-meta"><span class="diff ${diffCls}">${q.d}</span><span class="qn">${curTopic} · Q${curQIdx+1}</span></div>
+    <div class="pt">${q.t}</div><div class="pd">${q.desc}</div>
+    <div class="ex"><div class="ex-lbl">Example</div><div class="ex-in">Input: ${q.inp}</div><div class="ex-out">Output: ${q.out}</div></div>`;
+  document.getElementById('qProgress').textContent=`Q${curQIdx+1} of ${adaptiveQueue.length}`;
+  document.getElementById('editor').value=q.start;
+  document.getElementById('runOut').classList.remove('show');
+  document.getElementById('codeWrap').style.display='flex';
+  document.getElementById('codeWrap').style.flexDirection='column';
+  startTimer();startStuck();renderSidebar();
+}
+
+function getCurQ(){if(!curTopic)return null;return QS[curTopic][adaptiveQueue[curQIdx%adaptiveQueue.length]];}
+function startTimer(){clearInterval(timerInt);secs=0;timerInt=setInterval(()=>{secs++;document.getElementById('timer').textContent=`⏱ ${Math.floor(secs/60)}:${(secs%60).toString().padStart(2,'0')}`;},1000);}
+let lastCode='';
+function onType(){const code=document.getElementById('editor').value;if(code!==lastCode){lastCode=code;lastType=Date.now();}document.getElementById('stuckBar').classList.remove('show');clearTimeout(stuckInt);stuckInt=setTimeout(()=>{if(Date.now()-lastType>40000)document.getElementById('stuckBar').classList.add('show');},42000);}
+function startStuck(){lastCode='';lastType=Date.now();clearTimeout(stuckInt);document.getElementById('stuckBar').classList.remove('show');stuckInt=setTimeout(()=>document.getElementById('stuckBar').classList.add('show'),60000);}
+function autoHelp(){document.getElementById('stuckBar').classList.remove('show');const q=getCurQ();const code=document.getElementById('editor').value;bot(`💡 ${!code.trim()||code===q?.start?q?.h1:q?.h2}`);}
+function giveHint(){
+  const q=getCurQ();if(!q){bot('Pick a topic first!');return;}
+  const code=document.getElementById('editor').value;const early=!code.trim()||code===q.start;
+  bot(`💡 <strong>Hint ${early?'1':'2'}:</strong> ${early?q.h1:q.h2}`);
+  aiCall(`For "${q.t}", student wrote:\n${code||'[blank]'}\nGive ONE targeted hint in 1 sentence. Don't reveal the answer.`).then(r=>{if(r)bot('🔍 '+r);}).catch(()=>{});
+}
+function skipQ(){const q=getCurQ();if(!q)return;updatePerf(curTopic,false,true,secs);bot(`⏭️ Skipped "${q.t}". I'll bring it back later!`);curQIdx++;showQ();}
+
+function submitCode(){
+  const q=getCurQ();if(!q)return;
+  const code=document.getElementById('editor').value.trim();
+  if(!code||code===q.start){showOut('⚠️ Write your solution first!','var(--yellow)');return;}
+  showOut('⚙️ Verifying with AI…','var(--muted)');
+  const timeTaken=secs;
+  aiCall(
+    `You are a strict code evaluator. Problem: "${q.t}".\n`+
+    `Example: Input: ${q.inp} → Output: ${q.out}\n`+
+    `Reference solution:\n${q.sol}\n\n`+
+    `Student code:\n${code}\n\n`+
+    `Does the logic correctly solve this problem? Does it handle the example?\n`+
+    `Reply MUST start with exactly ✅ if correct or ❌ if wrong.\n`+
+    `Then give 1-2 sentences of specific feedback. If wrong, give ONE hint without revealing the full solution.`
+  ).then(r=>{
+    const ok=r.startsWith('✅');
+    showOut(r,ok?'var(--green)':'var(--red)');
+    updatePerf(curTopic,ok,false,timeTaken);
+    if(ok){
+      const bonus=timeTaken<30?20:timeTaken<60?15:10;
+      xp+=bonus;document.getElementById('xpVal').textContent=xp;clearInterval(timerInt);
+      bot(`🎉 ${r}<br><br>+${bonus} XP!${timeTaken<30?' ⚡ Lightning fast!':''}`);
+      setChips(['Next problem','Explain time complexity','Space complexity?','Edge cases?']);
+      const weak=getWeakTopics();
+      if(weak.length&&curQIdx%5===4)setTimeout(()=>bot(`📊 Weakest area: <strong>${weak[0]}</strong>. Focusing more there!`),1000);
+    }else{bot(r);setChips(['Another hint','Explain approach','What data structure?']);}
+    renderSidebar();
+  }).catch(e=>{
+    showOut('❌ AI check failed.','var(--red)');
+    bot('⚠️ '+e.message);
+  });
+}
+
+function nextQ(){
+  if(!curTopic)return;curQIdx++;
+  if(curQIdx%5===0){adaptiveQueue=buildAdaptiveQueue(curTopic);bot('🔄 Reshuffling based on your performance!');}
+  showQ();bot('💪 Next question!');
+}
+function showOut(msg,color){const el=document.getElementById('runOut');el.style.color=color;el.textContent=msg;el.classList.add('show');}
+
+function send(){
+  const inp=document.getElementById('cinp');const msg=inp.value.trim();if(!msg)return;
+  addMsg('user',msg);inp.value='';
+  const q=getCurQ();const code=document.getElementById('editor').value;
+  const weak=getWeakTopics();const perfSummary=weak.length?`Student weak areas: ${weak.join(', ')}.`:'';
+  const id=addMsg('ai','<span class="dots"><span></span><span></span><span></span></span>');
+  aiCall(`You are an adaptive coding tutor. Problem: "${q?.t||'general'}". ${perfSummary}\nStudent code:\n${code||'[none]'}\nStudent: "${msg}"\nReply in max 3 sentences. Be personalized. Guide, don't give away answer.`)
+    .then(r=>upd(id,r)).catch(()=>upd(id,`💡 ${q?q.h1:'Pick a topic!'}`));
+}
+
+function setChips(arr){document.getElementById('chips').innerHTML=arr.map(h=>`<div class="chip" onclick="quickAsk('${h.replace(/'/g,"\\'")}');">${h}</div>`).join('');}
+function quickAsk(t){document.getElementById('cinp').value=t;send();}
+let mid=0;
+function bot(html){return addMsg('ai',html);}
+function addMsg(role,html){
+  const id='m'+(++mid),isU=role==='user';
+  document.getElementById('msgs').innerHTML+=`<div class="msg ${role}" id="${id}"><div class="mav" style="background:${isU?'rgba(34,211,238,.1)':'rgba(74,222,128,.1)'}">${isU?'👤':'🤖'}</div><div class="bbl">${html}</div></div>`;
+  document.getElementById('msgs').scrollTop=99999;return id;
+}
+function upd(id,html){const el=document.getElementById(id);if(el)el.querySelector('.bbl').innerHTML=html;document.getElementById('msgs').scrollTop=99999;}
+
+async function aiCall(prompt){
+  const r=await fetch(GROQ_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[{role:'user',content:prompt}],max_tokens:350,temperature:.5})});
+  const d=await r.json();
+  if(!r.ok||d.error)throw new Error(d.error?.message||'API error');
+  return d.choices?.[0]?.message?.content||'';
+}
+
+initPerf();renderSidebar();
+bot('👋 Welcome! I\'m your <strong>adaptive AI tutor</strong>. Pick a topic to start! 🚀');
+setChips(['Start with Arrays','What\'s adaptive mode?','Show my weak areas']);
+</script>
+</body>
+</html>
