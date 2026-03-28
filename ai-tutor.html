@@ -15,7 +15,7 @@ nav{background:var(--bg2);border-bottom:1px solid var(--bg3);padding:12px 24px;d
 .nav-right{display:flex;gap:10px;align-items:center}
 .xp-badge{font-size:11px;padding:3px 10px;border-radius:12px;background:rgba(74,222,128,.1);color:var(--green);border:1px solid rgba(74,222,128,.2)}
 .streak-badge{font-size:11px;color:var(--yellow)}
-.page{display:flex;height:calc(100vh - 49px)}
+.page{display:flex;height:calc(100vh - 49px);overflow:hidden;}
 
 /* SIDEBAR */
 .sidebar{width:230px;min-width:230px;background:var(--bg2);border-right:1px solid var(--bg3);overflow-y:auto;padding:14px 10px;display:flex;flex-direction:column;gap:4px;}
@@ -35,7 +35,7 @@ nav{background:var(--bg2);border-bottom:1px solid var(--bg3);padding:12px 24px;d
 .weak-panel-hdr{font-size:10px;color:var(--cyan);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
 
 /* MIDDLE */
-.middle{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.middle{flex:1;display:flex;flex-direction:column;overflow-y:auto;min-width:0;height:100%;}
 
 /* PROBLEM AREA */
 .prob-area{padding:16px 20px;border-bottom:1px solid var(--bg3);background:var(--bg2);flex-shrink:0}
@@ -61,7 +61,7 @@ nav{background:var(--bg2);border-bottom:1px solid var(--bg3);padding:12px 24px;d
 .yt-link:hover{background:rgba(248,113,113,.2)}
 
 /* CODE AREA */
-.code-wrap{flex:1;display:flex;flex-direction:column;padding:12px 20px;overflow:hidden;min-height:0}
+.code-wrap{display:flex;flex-direction:column;padding:12px 20px;min-height:320px;}
 .toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px}
 .tl-left{display:flex;gap:6px;align-items:center}
 .lbadge{font-size:10px;padding:3px 9px;border-radius:4px;background:rgba(34,211,238,.08);color:var(--cyan);border:1px solid rgba(34,211,238,.2)}
@@ -99,7 +99,7 @@ nav{background:var(--bg2);border-bottom:1px solid var(--bg3);padding:12px 24px;d
 .ai-toast.show{display:block}
 .ai-toast-hdr{font-size:10px;color:var(--cyan);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;display:flex;justify-content:space-between}
 .toast-close{cursor:pointer;color:var(--muted)}
-.middle-inner{flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative}
+.middle-inner{display:flex;flex-direction:column;position:relative;}
 
 /* CHAT */
 .chat{width:310px;min-width:310px;background:var(--bg2);border-left:1px solid var(--bg3);display:flex;flex-direction:column;overflow:hidden}
