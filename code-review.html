@@ -317,16 +317,24 @@ async function runReview(){
     const msgs=['Analyzing structure…','Finding issues…','Refactoring code…','Writing review…'];
     let mi=0;const lInt=setInterval(()=>{document.getElementById('loaderTxt').textContent=msgs[++mi%msgs.length];},1200);
 
-    const prompt=`You are a senior ${lang} engineer. Review this code thoroughly.
-Focus: ${focus}
+    const prompt=`You are a senior ${lang} engineer doing a thorough production-grade code review.
+
+Review focus for the REPORT: ${focus}
 Language: ${lang}
+
 CODE:
 \`\`\`${lang}
 ${src.substring(0,12000)}
 \`\`\`
-${wantComments?'Add professional inline comments. Put full commented code in "commented_code" field.':''}
-Return ONLY raw JSON (no markdown fences):
-{"scores":{"overall":72,"reusability":65,"performance":80,"security":70},"summary":"2-3 sentence overview","critical":[{"title":"...","description":"...","fix":"short code fix snippet"}],"warnings":[{"title":"...","description":"...","fix":"short code fix snippet"}],"improvements":[{"title":"...","description":"...","fix":"short code fix snippet"}],"refactored":"FULL corrected code in ${lang}"${wantComments?',"commented_code":"full code with inline comments"':''},"positives":["strength 1","strength 2","strength 3"]}`;
+
+CRITICAL INSTRUCTIONS FOR REFACTORED CODE:
+- The "refactored" field must fix ABSOLUTELY EVERYTHING wrong with the code — bugs, security holes, performance issues, naming, SOLID principles, error handling, edge cases, type hints, docstrings, magic numbers, dead code, inefficient algorithms, SQL injection, XSS, hardcoded secrets, missing validations — regardless of the review focus selected above.
+- The refactored code must be production-ready, clean, and complete. Do not leave anything broken or suboptimal.
+- Preserve the original logic and intent but improve everything else.
+${wantComments?'- The "commented_code" field: take the REFACTORED version and add professional inline comments explaining every function, class, and non-obvious line.':''}
+
+Return ONLY raw JSON (no markdown fences, no extra text):
+{"scores":{"overall":72,"reusability":65,"performance":80,"security":70},"summary":"2-3 sentence overview of all issues found","critical":[{"title":"...","description":"...","fix":"short snippet showing the fix"}],"warnings":[{"title":"...","description":"...","fix":"short snippet showing the fix"}],"improvements":[{"title":"...","description":"...","fix":"short snippet showing the fix"}],"refactored":"COMPLETE fully corrected production-ready code with every possible issue fixed"${wantComments?',"commented_code":"refactored code with professional inline comments on every function and key line"':''},"positives":["specific strength 1","specific strength 2","specific strength 3"]}`;
 
     const res=await fetch(GROQ_URL,{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[{role:'user',content:prompt}],max_tokens:4000,temperature:.1})});
@@ -375,7 +383,7 @@ function renderOutput(r,lang){
 
   const tabs=[{id:'review',label:'📋 Review'}];
   if(r.commented_code)tabs.push({id:'comments',label:'💬 Commented'});
-  if(r.refactored)tabs.push({id:'refactored',label:'🔧 Refactored'});
+  if(r.refactored)tabs.push({id:'refactored',label:'🔧 Fully Fixed'});
   document.getElementById('outTabs').innerHTML=tabs.map((t,i)=>`<button class="out-tab ${i===0?'active':''}" onclick="switchOut('${t.id}',this)">${t.label}</button>`).join('');
 
   let html='';
@@ -391,7 +399,7 @@ function renderOutput(r,lang){
     '<p style="color:#64748b;font-size:13px;">Enable "Add Code Comments" option and re-run.</p>';
 
   const rHtml=r.refactored?`
-    <p style="font-size:13px;color:#94a3b8;margin-bottom:12px;">All issues fixed — production-ready version.</p>
+    <p style="font-size:13px;color:#94a3b8;margin-bottom:12px;">✅ Every possible issue fixed — bugs, security, performance, naming, edge cases, error handling and more. Production-ready.</p>
     ${makeCodeBlock(r.refactored,lang,"navigator.clipboard.writeText(currentResult.refactored).then(()=>alert('Copied!'))")}`:
     '<p style="color:#64748b;font-size:13px;">No refactored version returned.</p>';
 
