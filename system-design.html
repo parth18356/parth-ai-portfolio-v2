@@ -4,168 +4,280 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>AI System Design — Parth.ai</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230f172a'/><rect x='25' y='30' width='50' height='45' rx='10' fill='none' stroke='%2322d3ee' stroke-width='4'/><circle cx='38' cy='48' r='5' fill='%2322d3ee'/><circle cx='62' cy='48' r='5' fill='%2322d3ee'/><rect x='38' y='62' width='24' height='4' rx='2' fill='%234ade80'/><rect x='46' y='18' width='4' height='12' rx='2' fill='%2322d3ee'/><circle cx='48' cy='15' r='5' fill='%2322d3ee'/></svg>" type="image/svg+xml">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230f172a'/><rect x='25' y='30' width='50' height='45' rx='10' fill='none' stroke='%2322d3ee' stroke-width='4'/><circle cx='38' cy='48' r='5' fill='%2322d3ee'/><circle cx='62' cy='48' r='5' fill='%2322d3ee'/><rect x='38' y='62' width='24' height='4' rx='2' fill='%234ade80'/></svg>" type="image/svg+xml">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{--bg:#0a0a0f;--bg2:#0f172a;--bg3:#1e293b;--cyan:#22d3ee;--blue:#38bdf8;--green:#4ade80;--purple:#a78bfa;--yellow:#fbbf24;--red:#f87171;--text:#e2e8f0;--muted:#64748b;}
 html,body{background:var(--bg);color:var(--text);font-family:system-ui,sans-serif;min-height:100vh;}
-nav{background:rgba(10,10,15,.95);border-bottom:.5px solid var(--bg3);padding:14px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px);}
+
+nav{background:rgba(10,10,15,.97);border-bottom:.5px solid var(--bg3);padding:14px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px);}
 .nav-logo{color:var(--cyan);font-size:14px;font-weight:700;font-family:'Courier New',monospace;}
 .nav-logo span{color:#f1f5f9;}
-.nav-right{display:flex;gap:10px;align-items:center;}
 .nav-badge{font-size:10px;padding:3px 10px;border-radius:4px;background:rgba(167,139,250,.1);color:var(--purple);border:.5px solid rgba(167,139,250,.25);}
-.container{max-width:1100px;margin:0 auto;padding:32px 24px;}
-h1{font-size:28px;color:#f1f5f9;font-weight:700;margin-bottom:8px;}
-h1 span{color:var(--purple);}
-.subtitle{color:var(--muted);font-size:13px;margin-bottom:32px;line-height:1.7;}
-.input-card{background:var(--bg2);border:.5px solid var(--bg3);border-radius:12px;padding:24px;margin-bottom:20px;}
-.card-label{font-size:11px;color:var(--cyan);letter-spacing:.15em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
-.card-label::after{content:'';flex:1;height:.5px;background:var(--bg3);}
-.prompt-inp{width:100%;background:#070b13;border:.5px solid var(--bg3);border-radius:8px;padding:14px 18px;font-size:14px;color:var(--text);font-family:system-ui;outline:none;transition:border-color .2s;}
+
+.container{max-width:1200px;margin:0 auto;padding:32px 24px;}
+.page-header{margin-bottom:32px;}
+.page-header h1{font-size:28px;color:#f1f5f9;font-weight:700;margin-bottom:8px;}
+.page-header h1 span{color:var(--purple);}
+.page-header p{color:var(--muted);font-size:13px;line-height:1.7;}
+
+/* MAIN LAYOUT */
+.main-layout{display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start;}
+@media(max-width:900px){.main-layout{grid-template-columns:1fr;}}
+
+/* INPUT PANEL */
+.input-panel{display:flex;flex-direction:column;gap:16px;}
+.panel{background:var(--bg2);border:.5px solid var(--bg3);border-radius:12px;padding:20px;}
+.panel-label{font-size:10px;color:var(--cyan);letter-spacing:.15em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.panel-label::after{content:'';flex:1;height:.5px;background:var(--bg3);}
+
+.prompt-wrap{position:relative;}
+.prompt-inp{width:100%;background:#070b13;border:.5px solid var(--bg3);border-radius:8px;padding:14px 18px;font-size:14px;color:var(--text);font-family:system-ui;outline:none;transition:border-color .2s;padding-right:110px;}
 .prompt-inp:focus{border-color:var(--cyan);}
-.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
-.chip{font-size:11px;padding:5px 12px;border-radius:20px;background:rgba(167,139,250,.08);color:var(--purple);border:.5px solid rgba(167,139,250,.2);cursor:pointer;transition:all .2s;}
-.chip:hover{background:rgba(167,139,250,.18);}
-.scale-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px;}
-.scale-opt{background:#070b13;border:.5px solid var(--bg3);border-radius:8px;padding:12px;text-align:center;cursor:pointer;transition:all .2s;}
-.scale-opt:hover{border-color:var(--purple);}
-.scale-opt.selected{border-color:var(--purple);background:rgba(167,139,250,.08);}
-.scale-opt-title{font-size:13px;color:var(--text);font-weight:600;margin-bottom:2px;}
-.scale-opt-sub{font-size:11px;color:var(--muted);}
-.gen-btn{width:100%;padding:14px;background:var(--purple);color:#0a0a0f;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;margin-top:16px;transition:all .2s;}
+.gen-btn{position:absolute;right:8px;top:50%;transform:translateY(-50%);padding:8px 16px;background:var(--purple);color:#0a0a0f;border:none;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;}
 .gen-btn:hover{background:#c084fc;}
 .gen-btn:disabled{background:#334155;color:#64748b;cursor:not-allowed;}
-.loading{display:none;text-align:center;padding:40px;background:var(--bg2);border:.5px solid var(--bg3);border-radius:12px;margin-bottom:20px;}
+
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px;}
+.chip{font-size:11px;padding:4px 11px;border-radius:20px;background:rgba(167,139,250,.08);color:var(--purple);border:.5px solid rgba(167,139,250,.2);cursor:pointer;transition:all .2s;}
+.chip:hover{background:rgba(167,139,250,.18);}
+
+.scale-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.scale-opt{background:#070b13;border:.5px solid var(--bg3);border-radius:8px;padding:11px;text-align:center;cursor:pointer;transition:all .2s;}
+.scale-opt:hover{border-color:var(--purple);}
+.scale-opt.selected{border-color:var(--purple);background:rgba(167,139,250,.08);}
+.scale-opt-title{font-size:12px;color:var(--text);font-weight:600;margin-bottom:2px;}
+.scale-opt-sub{font-size:10px;color:var(--muted);}
+
+/* AI CHAT SIDEBAR */
+.chat-panel{background:var(--bg2);border:.5px solid var(--bg3);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;height:520px;position:sticky;top:80px;}
+.chat-hdr{padding:12px 16px;border-bottom:.5px solid var(--bg3);background:#070b13;display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.chat-av{width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,rgba(167,139,250,.2),rgba(34,211,238,.2));border:.5px solid rgba(167,139,250,.3);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
+.chat-aname{font-size:12px;font-weight:700;color:#f1f5f9;}
+.chat-astatus{font-size:10px;color:var(--green);}
+.chat-msgs{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;}
+.cmsg{display:flex;gap:6px;align-items:flex-start;}
+.cmsg.user{flex-direction:row-reverse;}
+.cmav{width:20px;height:20px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;margin-top:2px;}
+.cbbl{border-radius:8px;padding:8px 10px;max-width:calc(100% - 28px);font-size:11px;line-height:1.65;}
+.cmsg.ai .cbbl{background:#070b13;color:var(--text);border:.5px solid var(--bg3);}
+.cmsg.user .cbbl{background:rgba(167,139,250,.1);color:var(--text);border:.5px solid rgba(167,139,250,.2);}
+.chat-chips{padding:6px 10px;border-top:.5px solid var(--bg3);display:flex;flex-wrap:wrap;gap:4px;flex-shrink:0;}
+.chat-chip{font-size:10px;padding:3px 8px;border-radius:8px;background:rgba(167,139,250,.07);color:var(--purple);border:.5px solid rgba(167,139,250,.15);cursor:pointer;transition:all .2s;white-space:nowrap;}
+.chat-chip:hover{background:rgba(167,139,250,.15);}
+.chat-inp-row{display:flex;gap:6px;padding:8px 10px;border-top:.5px solid var(--bg3);flex-shrink:0;}
+.chat-inp{flex:1;background:#070b13;border:.5px solid var(--bg3);border-radius:6px;padding:7px 10px;font-size:11px;color:var(--text);font-family:system-ui;resize:none;outline:none;}
+.chat-inp:focus{border-color:var(--purple);}
+.chat-sbtn{background:var(--purple);color:#0a0a0f;border:none;border-radius:6px;padding:7px 10px;cursor:pointer;font-size:13px;font-weight:700;}
+@keyframes dp{0%,80%,100%{transform:scale(.5);opacity:.3}40%{transform:scale(1);opacity:1}}
+.dots span{width:4px;height:4px;border-radius:50%;background:var(--purple);display:inline-block;animation:dp .8s ease-in-out infinite;margin:0 1px;}
+.dots span:nth-child(2){animation-delay:.16s}.dots span:nth-child(3){animation-delay:.32s}
+
+/* LOADING */
+.loading{display:none;text-align:center;padding:40px;background:var(--bg2);border:.5px solid var(--bg3);border-radius:12px;margin-top:20px;}
 .loading.show{display:block;}
 .loading-txt{font-size:14px;color:var(--purple);margin-top:16px;}
 .loading-sub{font-size:12px;color:var(--muted);margin-top:6px;}
 @keyframes spin{to{transform:rotate(360deg)}}
 .spinner{width:36px;height:36px;border:3px solid rgba(167,139,250,.2);border-top-color:var(--purple);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto;}
+.err-box{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.3);border-radius:8px;padding:16px;color:var(--red);font-size:13px;margin-top:16px;display:none;}
+.err-box.show{display:block;}
+
+/* OUTPUT */
+#output{display:none;margin-top:20px;}
+.stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px;}
+@media(max-width:640px){.stats-row{grid-template-columns:repeat(3,1fr);}}
+.stat-mini{background:var(--bg2);border:.5px solid var(--bg3);border-radius:8px;padding:14px;text-align:center;transition:border-color .2s;}
+.stat-mini:hover{border-color:var(--purple);}
+.stat-val{font-size:18px;font-weight:700;color:var(--purple);}
+.stat-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-top:4px;}
+
+/* TABS */
 .out-tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
-.out-tab{padding:9px 20px;border-radius:8px;font-size:12px;font-weight:700;border:none;cursor:pointer;background:var(--bg3);color:var(--muted);transition:all .2s;}
+.out-tab{padding:9px 18px;border-radius:8px;font-size:12px;font-weight:700;border:none;cursor:pointer;background:var(--bg3);color:var(--muted);transition:all .2s;}
 .out-tab.active{background:var(--purple);color:#0a0a0f;}
 .out-panel{display:none;}.out-panel.show{display:block;}
-.card{background:var(--bg2);border:.5px solid var(--bg3);border-radius:12px;padding:20px;margin-bottom:16px;}
-.section-hdr{font-size:11px;color:var(--cyan);letter-spacing:.12em;text-transform:uppercase;padding-bottom:10px;border-bottom:.5px solid var(--bg3);margin-bottom:14px;}
-.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;}
-.stat-mini{background:var(--bg2);border:.5px solid var(--bg3);border-radius:8px;padding:14px;text-align:center;}
-.stat-val{font-size:20px;font-weight:700;color:var(--purple);}
-.stat-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-top:4px;}
-.stack-table{width:100%;border-collapse:collapse;}
-.stack-table th{font-size:11px;color:var(--cyan);text-transform:uppercase;letter-spacing:.1em;padding:10px 14px;text-align:left;border-bottom:1px solid var(--bg3);background:#070b13;}
-.stack-table td{padding:12px 14px;font-size:13px;border-bottom:.5px solid var(--bg3);vertical-align:top;line-height:1.6;}
+
+/* ARCH DIAGRAM */
+.arch-wrap{background:#040810;border:.5px solid var(--bg3);border-radius:10px;padding:20px;overflow-x:auto;margin-bottom:16px;}
+
+/* COMPONENTS */
+.comp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px;}
+.comp-card{background:#070b13;border:.5px solid var(--bg3);border-radius:8px;padding:14px;border-left-width:3px;border-left-style:solid;transition:transform .2s;}
+.comp-card:hover{transform:translateY(-2px);}
+
+/* STACK TABLE */
+.stack-wrap{overflow-x:auto;}
+.stack-table{width:100%;border-collapse:collapse;min-width:600px;}
+.stack-table th{font-size:10px;color:var(--cyan);text-transform:uppercase;letter-spacing:.1em;padding:10px 14px;text-align:left;border-bottom:1px solid var(--bg3);background:#040810;}
+.stack-table td{padding:12px 14px;font-size:12px;border-bottom:.5px solid var(--bg3);vertical-align:top;line-height:1.6;}
 .stack-table tr:last-child td{border-bottom:none;}
 .stack-table tr:hover td{background:rgba(167,139,250,.03);}
-.layer-name{font-weight:700;color:#f1f5f9;}
 .free-tag{display:inline-block;font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(74,222,128,.12);color:var(--green);border:.5px solid rgba(74,222,128,.25);margin:2px 2px 0 0;}
 .paid-tag{display:inline-block;font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(251,191,36,.12);color:var(--yellow);border:.5px solid rgba(251,191,36,.25);margin:2px 2px 0 0;}
 .best-tag{display:inline-block;font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(56,189,248,.12);color:var(--blue);border:.5px solid rgba(56,189,248,.25);margin:2px 2px 0 0;}
-.arch-svg-wrap{background:#040810;border:.5px solid var(--bg3);border-radius:10px;padding:16px;overflow-x:auto;}
-.roadmap-phase{background:#070b13;border:.5px solid var(--bg3);border-radius:10px;padding:16px;margin-bottom:12px;}
-.phase-header{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
-.phase-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
-.phase-title{font-size:14px;font-weight:700;color:#f1f5f9;}
-.phase-timeline{font-size:11px;color:var(--muted);margin-left:auto;}
-.phase-desc{font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.6;}
-.phase-items{display:flex;flex-wrap:wrap;gap:6px;}
-.phase-item{font-size:11px;padding:4px 10px;border-radius:12px;}
-.tradeoff{display:flex;gap:10px;padding:12px 14px;border-radius:8px;margin-bottom:8px;font-size:13px;line-height:1.6;}
+
+/* TIMELINE ROADMAP */
+.timeline{position:relative;padding-left:32px;}
+.timeline::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--green),var(--yellow),var(--purple),var(--blue));}
+.tl-item{position:relative;margin-bottom:24px;}
+.tl-dot{position:absolute;left:-26px;width:14px;height:14px;border-radius:50%;border:2px solid;display:flex;align-items:center;justify-content:center;background:var(--bg);font-size:8px;top:4px;}
+.tl-card{background:#070b13;border:.5px solid var(--bg3);border-radius:10px;padding:16px;}
+.tl-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px;}
+.tl-phase{font-size:13px;font-weight:700;}
+.tl-time{font-size:10px;color:var(--muted);padding:2px 8px;background:var(--bg3);border-radius:12px;}
+.tl-desc{font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6;}
+.tl-items{display:flex;flex-wrap:wrap;gap:5px;}
+.tl-item-tag{font-size:10px;padding:3px 9px;border-radius:10px;}
+
+/* TRADEOFFS */
+.tradeoff{display:flex;gap:10px;padding:12px 14px;border-radius:8px;margin-bottom:8px;font-size:12px;line-height:1.6;}
 .tradeoff.pro{background:rgba(74,222,128,.05);border:.5px solid rgba(74,222,128,.15);color:#d1fae5;}
 .tradeoff.con{background:rgba(248,113,113,.05);border:.5px solid rgba(248,113,113,.15);color:#fee2e2;}
-.scalability-box{font-size:13px;color:var(--muted);line-height:1.85;background:#070b13;padding:16px;border-radius:8px;border:.5px solid var(--bg3);}
-.err-box{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.3);border-radius:8px;padding:16px;color:var(--red);font-size:13px;margin-bottom:16px;display:none;}
-.err-box.show{display:block;}
+.scale-box{font-size:12px;color:var(--muted);line-height:1.85;background:#070b13;padding:16px;border-radius:8px;border:.5px solid var(--bg3);}
+
+/* COST ESTIMATOR */
+.cost-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:20px;}
+.cost-card{background:#070b13;border:.5px solid var(--bg3);border-radius:10px;padding:16px;}
+.cost-phase{font-size:11px;font-weight:700;margin-bottom:12px;}
+.cost-item{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:.5px solid var(--bg3);font-size:11px;}
+.cost-item:last-child{border-bottom:none;font-weight:700;padding-top:10px;}
+.cost-total{font-size:18px;font-weight:700;color:var(--green);margin-top:6px;}
+.cost-lbl{font-size:10px;color:var(--muted);}
+
+/* SECTION HEADER */
+.shdr{font-size:10px;color:var(--cyan);letter-spacing:.15em;text-transform:uppercase;padding-bottom:10px;border-bottom:.5px solid var(--bg3);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.card{background:var(--bg2);border:.5px solid var(--bg3);border-radius:12px;padding:20px;margin-bottom:16px;}
 </style>
 </head>
 <body>
 
 <nav>
   <div class="nav-logo"><span>Parth</span>.ai — System Design</div>
-  <div class="nav-right">
-    <div class="nav-badge">Groq · Llama 3.3 70B · Free</div>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <div class="nav-badge">Groq · Llama 3.3 70B</div>
   </div>
 </nav>
 
 <div class="container">
-  <h1>AI System <span>Design</span> Generator</h1>
-  <p class="subtitle">Enter any app — get a full architecture diagram, free vs paid stack comparison, build roadmap, and scalability strategy.</p>
-
-  <div class="input-card">
-    <div class="card-label">What do you want to design?</div>
-    <input class="prompt-inp" type="text" id="promptInp" placeholder="e.g. Design a food delivery app like Zomato..." onkeydown="if(event.key==='Enter')generate()"/>
-    <div class="chips">
-      <span class="chip" onclick="setPrompt('Real-time ride sharing app like Uber')">🚗 Uber</span>
-      <span class="chip" onclick="setPrompt('Video streaming platform like Netflix')">🎬 Netflix</span>
-      <span class="chip" onclick="setPrompt('E-commerce marketplace like Amazon')">🛒 Amazon</span>
-      <span class="chip" onclick="setPrompt('Social media feed like Twitter/X')">🐦 Twitter</span>
-      <span class="chip" onclick="setPrompt('Payment gateway like Razorpay')">💳 Payments</span>
-      <span class="chip" onclick="setPrompt('Messaging app like WhatsApp')">💬 WhatsApp</span>
-      <span class="chip" onclick="setPrompt('Hotel booking system like Booking.com')">🏨 Booking</span>
-      <span class="chip" onclick="setPrompt('Collaborative code editor like VS Code')">👩‍💻 Code Editor</span>
-    </div>
-    <div class="card-label" style="margin-top:20px;">Scale Target</div>
-    <div class="scale-opts">
-      <div class="scale-opt" onclick="selectScale(this,'startup')"><div class="scale-opt-title">🚀 Startup</div><div class="scale-opt-sub">~1K users/day</div></div>
-      <div class="scale-opt selected" onclick="selectScale(this,'mid')"><div class="scale-opt-title">📈 Mid-Scale</div><div class="scale-opt-sub">~1M users/day</div></div>
-      <div class="scale-opt" onclick="selectScale(this,'hyper')"><div class="scale-opt-title">🌐 Hyper-Scale</div><div class="scale-opt-sub">~1B users/day</div></div>
-    </div>
-    <button class="gen-btn" id="genBtn" onclick="generate()">⚡ Generate Full Design</button>
+  <div class="page-header">
+    <h1>AI System <span>Design</span> Generator</h1>
+    <p>Describe any app — get architecture diagram, stack comparison, roadmap, cost estimate, and a live AI assistant to answer follow-up questions.</p>
   </div>
 
-  <div class="err-box" id="errBox"></div>
-  <div class="loading" id="loading">
-    <div class="spinner"></div>
-    <div class="loading-txt" id="loadingTxt">Designing your system...</div>
-    <div class="loading-sub">Generating architecture · stack comparison · roadmap · tradeoffs</div>
-  </div>
-
-  <div id="output" style="display:none;">
-    <div class="stats-row" id="statsRow"></div>
-    <div class="out-tabs">
-      <button class="out-tab active" onclick="switchOut('arch',this)">🗺️ Architecture</button>
-      <button class="out-tab" onclick="switchOut('stack',this)">📊 Stack Comparison</button>
-      <button class="out-tab" onclick="switchOut('roadmap',this)">🛣️ Build Roadmap</button>
-      <button class="out-tab" onclick="switchOut('tradeoffs',this)">⚖️ Tradeoffs</button>
-    </div>
-
-    <div class="out-panel show" id="panel-arch">
-      <div class="card">
-        <div class="section-hdr">Architecture Diagram</div>
-        <div class="arch-svg-wrap" id="archDiagram"></div>
-      </div>
-      <div class="card">
-        <div class="section-hdr">Components Breakdown</div>
-        <div id="components"></div>
-      </div>
-    </div>
-
-    <div class="out-panel" id="panel-stack">
-      <div class="card">
-        <div class="section-hdr">Free vs Paid Stack — Full Comparison</div>
-        <div style="overflow-x:auto;">
-          <table class="stack-table" id="stackTable"></table>
+  <div class="main-layout">
+    <!-- LEFT: INPUT + OUTPUT -->
+    <div>
+      <div class="input-panel">
+        <div class="panel">
+          <div class="panel-label">What do you want to design?</div>
+          <div class="prompt-wrap">
+            <input class="prompt-inp" type="text" id="promptInp" placeholder="e.g. Food delivery app like Zomato..." onkeydown="if(event.key==='Enter')generate()"/>
+            <button class="gen-btn" id="genBtn" onclick="generate()">⚡ Generate</button>
+          </div>
+          <div class="chips">
+            <span class="chip" onclick="setPrompt('Real-time ride sharing app like Uber')">🚗 Uber</span>
+            <span class="chip" onclick="setPrompt('Video streaming platform like Netflix')">🎬 Netflix</span>
+            <span class="chip" onclick="setPrompt('E-commerce marketplace like Amazon')">🛒 Amazon</span>
+            <span class="chip" onclick="setPrompt('Social media feed like Twitter/X')">🐦 Twitter</span>
+            <span class="chip" onclick="setPrompt('Payment gateway like Razorpay')">💳 Payments</span>
+            <span class="chip" onclick="setPrompt('Messaging app like WhatsApp')">💬 WhatsApp</span>
+            <span class="chip" onclick="setPrompt('Hotel booking system like Booking.com')">🏨 Booking</span>
+            <span class="chip" onclick="setPrompt('Collaborative code editor like VS Code')">👩‍💻 Code Editor</span>
+          </div>
         </div>
-        <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--muted);">
-          <span><span class="free-tag">Free</span> Open source / free tier</span>
-          <span><span class="paid-tag">Paid</span> Commercial / enterprise</span>
-          <span><span class="best-tag">Recommended</span> Best for this scale</span>
+        <div class="panel">
+          <div class="panel-label">Scale Target</div>
+          <div class="scale-opts">
+            <div class="scale-opt" onclick="selectScale(this,'startup')"><div class="scale-opt-title">🚀 Startup</div><div class="scale-opt-sub">~1K users/day</div></div>
+            <div class="scale-opt selected" onclick="selectScale(this,'mid')"><div class="scale-opt-title">📈 Mid-Scale</div><div class="scale-opt-sub">~1M users/day</div></div>
+            <div class="scale-opt" onclick="selectScale(this,'hyper')"><div class="scale-opt-title">🌐 Hyper-Scale</div><div class="scale-opt-sub">~1B users/day</div></div>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="out-panel" id="panel-roadmap">
-      <div class="card">
-        <div class="section-hdr">Build Roadmap — Phase by Phase</div>
-        <div id="roadmapContent"></div>
+      <div class="err-box" id="errBox"></div>
+      <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <div class="loading-txt" id="loadingTxt">Designing your system...</div>
+        <div class="loading-sub">Architecture · Stack · Roadmap · Cost · Tradeoffs</div>
+      </div>
+
+      <div id="output">
+        <div class="stats-row" id="statsRow"></div>
+        <div class="out-tabs">
+          <button class="out-tab active" onclick="switchOut('arch',this)">🗺️ Architecture</button>
+          <button class="out-tab" onclick="switchOut('stack',this)">📊 Stack</button>
+          <button class="out-tab" onclick="switchOut('roadmap',this)">🛣️ Roadmap</button>
+          <button class="out-tab" onclick="switchOut('cost',this)">💰 Cost</button>
+          <button class="out-tab" onclick="switchOut('tradeoffs',this)">⚖️ Tradeoffs</button>
+        </div>
+
+        <div class="out-panel show" id="panel-arch">
+          <div class="card">
+            <div class="shdr">Architecture Diagram</div>
+            <div class="arch-wrap" id="archDiagram"></div>
+          </div>
+          <div class="card">
+            <div class="shdr">Components</div>
+            <div class="comp-grid" id="components"></div>
+          </div>
+        </div>
+
+        <div class="out-panel" id="panel-stack">
+          <div class="card">
+            <div class="shdr">Free vs Paid Stack</div>
+            <div class="stack-wrap"><table class="stack-table" id="stackTable"></table></div>
+            <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;font-size:11px;color:var(--muted);">
+              <span><span class="free-tag">Free</span> Open source</span>
+              <span><span class="paid-tag">Paid</span> Commercial</span>
+              <span><span class="best-tag">Recommended</span> Best fit</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="out-panel" id="panel-roadmap">
+          <div class="card">
+            <div class="shdr">Build Roadmap</div>
+            <div class="timeline" id="roadmapContent"></div>
+          </div>
+        </div>
+
+        <div class="out-panel" id="panel-cost">
+          <div class="card">
+            <div class="shdr">Monthly Cost Estimate by Phase</div>
+            <div class="cost-grid" id="costContent"></div>
+            <div style="padding:14px;background:#070b13;border-radius:8px;border:.5px solid var(--bg3);font-size:11px;color:var(--muted);line-height:1.7;">
+              💡 Estimates are approximate and vary by region, usage patterns, and negotiated contracts. Free-tier options can significantly reduce startup costs.
+            </div>
+          </div>
+        </div>
+
+        <div class="out-panel" id="panel-tradeoffs">
+          <div class="card">
+            <div class="shdr">Tradeoffs & Design Decisions</div>
+            <div id="tradeoffsContent"></div>
+            <div class="shdr" style="margin-top:20px;">Scalability Strategy</div>
+            <div class="scale-box" id="scalabilityContent"></div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="out-panel" id="panel-tradeoffs">
-      <div class="card">
-        <div class="section-hdr">Tradeoffs & Design Decisions</div>
-        <div id="tradeoffsContent"></div>
-        <div class="section-hdr" style="margin-top:20px;">Scalability Strategy</div>
-        <div class="scalability-box" id="scalabilityContent"></div>
+    <!-- RIGHT: AI CHAT -->
+    <div class="chat-panel">
+      <div class="chat-hdr">
+        <div class="chat-av">🤖</div>
+        <div>
+          <div class="chat-aname">Design Assistant</div>
+          <div class="chat-astatus">● Ask anything about your design</div>
+        </div>
+      </div>
+      <div class="chat-msgs" id="chatMsgs"></div>
+      <div class="chat-chips" id="chatChips"></div>
+      <div class="chat-inp-row">
+        <textarea class="chat-inp" id="chatInp" rows="2" placeholder="Ask about your design..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();chatSend()}"></textarea>
+        <button class="chat-sbtn" onclick="chatSend()">↑</button>
       </div>
     </div>
   </div>
@@ -173,8 +285,8 @@ h1 span{color:var(--purple);}
 
 <script>
 const GROQ_URL='/api/chat';
+let scale='mid',currentDesign=null,chatHistory=[];
 
-let scale='mid';
 function setPrompt(t){document.getElementById('promptInp').value=t;}
 function selectScale(el,s){scale=s;document.querySelectorAll('.scale-opt').forEach(e=>e.classList.remove('selected'));el.classList.add('selected');}
 function switchOut(id,btn){
@@ -186,34 +298,33 @@ function switchOut(id,btn){
 async function generate(){
   const prompt=document.getElementById('promptInp').value.trim();
   if(!prompt){alert('Please enter a system to design.');return;}
-
   document.getElementById('errBox').classList.remove('show');
   document.getElementById('output').style.display='none';
   document.getElementById('loading').classList.add('show');
-  const btn=document.getElementById('genBtn');btn.disabled=true;btn.textContent='⏳ Generating…';
+  const btn=document.getElementById('genBtn');btn.disabled=true;btn.textContent='⏳...';
 
   const scaleMap={
-    startup:'Startup scale (~1K users/day): Use monolith, simple stack, minimize cost',
-    mid:'Mid-scale (~1M users/day): Microservices, horizontal scaling, caching, queues',
-    hyper:'Hyper-scale (~1B users/day): Multi-region, global CDN, sharding, eventual consistency'
+    startup:'Startup (~1K users/day): monolith, simple stack, minimize cost',
+    mid:'Mid-scale (~1M users/day): microservices, horizontal scaling, caching',
+    hyper:'Hyper-scale (~1B users/day): multi-region, global CDN, sharding'
   };
 
   const aiPrompt=`You are a principal solutions architect. Design a complete system for: "${prompt}"
 Scale: ${scaleMap[scale]}
 
-Respond ONLY with valid JSON, no markdown, no extra text:
+Respond ONLY with valid JSON, no markdown:
 {
-  "title": "System name",
-  "description": "2 sentence overview",
-  "stats": {"rps":"10K/s","latency":"<200ms","availability":"99.99%","storage":"50TB","engineers":"5-10"},
-  "components": [
-    {"name":"Client Apps","description":"Web and mobile frontend handling user interactions","technologies":["React","React Native"],"color":"#22d3ee","layer":"Frontend"},
-    {"name":"API Gateway","description":"Entry point for all requests, handles routing and rate limiting","technologies":["Nginx","Kong"],"color":"#a78bfa","layer":"Gateway"},
-    {"name":"Auth Service","description":"Handles authentication, authorization and session management","technologies":["JWT","OAuth2","Redis"],"color":"#38bdf8","layer":"Services"},
-    {"name":"Core Service","description":"Main business logic and data processing","technologies":["FastAPI","Python"],"color":"#4ade80","layer":"Services"},
-    {"name":"Database","description":"Primary persistent data storage","technologies":["PostgreSQL","Redis Cache"],"color":"#fbbf24","layer":"Data"},
-    {"name":"Message Queue","description":"Async event processing and background jobs","technologies":["Kafka","Celery"],"color":"#f87171","layer":"Messaging"},
-    {"name":"CDN / Storage","description":"Static assets, media files and global content delivery","technologies":["CloudFront","S3"],"color":"#818cf8","layer":"Infrastructure"}
+  "title":"System name",
+  "description":"2 sentence overview",
+  "stats":{"rps":"10K/s","latency":"<200ms","availability":"99.99%","storage":"50TB","engineers":"5-10"},
+  "components":[
+    {"name":"Client Apps","description":"Web and mobile frontend","technologies":["React","React Native"],"color":"#22d3ee","layer":"Frontend","icon":"💻"},
+    {"name":"API Gateway","description":"Entry point, routing, rate limiting","technologies":["Nginx","Kong"],"color":"#a78bfa","layer":"Gateway","icon":"🔀"},
+    {"name":"Auth Service","description":"Authentication and sessions","technologies":["JWT","Redis"],"color":"#38bdf8","layer":"Services","icon":"🔐"},
+    {"name":"Core Service","description":"Main business logic","technologies":["FastAPI"],"color":"#4ade80","layer":"Services","icon":"⚙️"},
+    {"name":"Database","description":"Primary data storage","technologies":["PostgreSQL","Redis"],"color":"#fbbf24","layer":"Data","icon":"🗄️"},
+    {"name":"Message Queue","description":"Async event processing","technologies":["Kafka"],"color":"#f87171","layer":"Messaging","icon":"📨"},
+    {"name":"CDN / Storage","description":"Static assets and media","technologies":["S3","CloudFront"],"color":"#818cf8","layer":"Infrastructure","icon":"☁️"}
   ],
   "connections":[
     {"from":"Client Apps","to":"API Gateway"},
@@ -223,46 +334,45 @@ Respond ONLY with valid JSON, no markdown, no extra text:
     {"from":"Core Service","to":"Message Queue"},
     {"from":"Client Apps","to":"CDN / Storage"}
   ],
-  "stackComparison": [
-    {"layer":"Frontend","free":["React (free)","Vue.js (free)","Next.js (free)"],"paid":["Angular Enterprise","Blazor (.NET)"],"recommended":"React + Next.js","why":"Largest ecosystem, SSR support, best for SEO and performance"},
-    {"layer":"API Gateway","free":["Nginx (free)","Kong Community (free)","Traefik (free)"],"paid":["AWS API Gateway ($3.50/M req)","Kong Enterprise","Apigee"],"recommended":"Nginx (free) → AWS API Gateway (scale)","why":"Nginx for startup, managed gateway as you scale to reduce ops burden"},
-    {"layer":"Backend","free":["FastAPI (free)","Node.js (free)","Django (free)","Spring Boot (free)"],"paid":["AWS Lambda ($0.20/1M)","Azure Functions","Google Cloud Run"],"recommended":"FastAPI (Python)","why":"Fastest Python framework, async support, auto docs, great for ML integration"},
-    {"layer":"Database","free":["PostgreSQL (free)","MySQL (free)","MongoDB Community","SQLite"],"paid":["AWS RDS ($25+/mo)","MongoDB Atlas ($57+/mo)","PlanetScale","Supabase Pro"],"recommended":"PostgreSQL (free) + Redis Cache","why":"Battle-tested, ACID compliant, excellent for relational data with Redis for hot data"},
-    {"layer":"Message Queue","free":["Kafka (free self-host)","RabbitMQ (free)","Redis Streams (free)","BullMQ (free)"],"paid":["AWS SQS ($0.40/1M)","Confluent Kafka ($0.10/GB)","Pub/Sub GCP"],"recommended":"Redis BullMQ (startup) → Kafka (scale)","why":"BullMQ for simplicity at startup, Kafka for massive throughput at scale"},
-    {"layer":"Cache","free":["Redis (free self-host)","Memcached (free)","Upstash free tier"],"paid":["AWS ElastiCache ($16+/mo)","Redis Enterprise","Upstash Pro"],"recommended":"Redis (self-hosted) → ElastiCache","why":"Redis is the industry standard. Sub-millisecond reads, supports pub/sub and queues"},
-    {"layer":"Storage / CDN","free":["Cloudflare CDN (free)","MinIO (free self-host)","Backblaze B2 (free tier)"],"paid":["AWS S3 ($0.023/GB)","CloudFront CDN","Cloudinary (media)"],"recommended":"AWS S3 + CloudFront","why":"Most reliable, global edge network, tight AWS ecosystem integration"},
-    {"layer":"Hosting / Infra","free":["Railway (free tier)","Render (free tier)","Fly.io (free tier)","Vercel (free)"],"paid":["AWS EC2/ECS ($20+/mo)","GCP GKE","Azure AKS","DigitalOcean ($12+/mo)"],"recommended":"Railway/Render (startup) → AWS ECS (scale)","why":"Start free and deploy fast, migrate to AWS when you need enterprise SLA and auto-scaling"},
-    {"layer":"Monitoring","free":["Prometheus (free)","Grafana (free)","Sentry free tier","UptimeRobot (free)"],"paid":["Datadog ($15+/host/mo)","New Relic ($0.25/GB)","AWS CloudWatch"],"recommended":"Prometheus + Grafana (free) → Datadog","why":"Open source stack is powerful and free. Upgrade to Datadog for AI-powered alerting at scale"}
+  "stackComparison":[
+    {"layer":"Frontend","free":["React","Vue.js","Next.js"],"paid":["Angular Enterprise"],"recommended":"React + Next.js","why":"Largest ecosystem, SSR, best SEO"},
+    {"layer":"API Gateway","free":["Nginx","Kong Community","Traefik"],"paid":["AWS API Gateway","Apigee"],"recommended":"Nginx → AWS API Gateway","why":"Start free, managed at scale"},
+    {"layer":"Backend","free":["FastAPI","Node.js","Django"],"paid":["AWS Lambda","Azure Functions"],"recommended":"FastAPI","why":"Fast, async, auto docs, great for ML"},
+    {"layer":"Database","free":["PostgreSQL","MySQL","MongoDB CE"],"paid":["AWS RDS","MongoDB Atlas"],"recommended":"PostgreSQL + Redis","why":"ACID compliant, Redis for hot data"},
+    {"layer":"Queue","free":["Kafka","RabbitMQ","BullMQ"],"paid":["AWS SQS","Confluent"],"recommended":"BullMQ → Kafka","why":"Simple startup, massive scale"},
+    {"layer":"Hosting","free":["Railway","Render","Fly.io"],"paid":["AWS ECS","GCP GKE"],"recommended":"Railway → AWS ECS","why":"Free fast start, enterprise SLA at scale"},
+    {"layer":"Monitoring","free":["Prometheus","Grafana","Sentry"],"paid":["Datadog","New Relic"],"recommended":"Prometheus + Grafana","why":"Powerful open source, Datadog for AI alerts"}
   ],
-  "roadmap": [
-    {"phase":"Phase 1 — MVP","timeline":"0–3 months","color":"#4ade80","description":"Build the core product fast with minimal cost. Validate before scaling.","items":["Basic REST API (FastAPI/Node)","PostgreSQL database","Simple JWT auth","React frontend","Deploy on Railway or Render (free)","Basic error logging (Sentry free)","CI/CD with GitHub Actions"]},
-    {"phase":"Phase 2 — Growth","timeline":"3–9 months","color":"#fbbf24","description":"Add reliability, performance, and team collaboration tools.","items":["Add Redis caching layer","Introduce message queue (BullMQ)","Add monitoring (Prometheus + Grafana)","Migrate DB to managed RDS","Add CDN for static assets","Horizontal scaling (multiple instances)","Rate limiting and API security","Automated testing (80%+ coverage)"]},
-    {"phase":"Phase 3 — Scale","timeline":"9–18 months","color":"#a78bfa","description":"Enterprise-grade reliability and global reach.","items":["Kubernetes (EKS/GKE) deployment","Multi-region setup","Switch to Kafka for event streaming","Database sharding / read replicas","Global CDN (CloudFront)","Advanced observability (Datadog/New Relic)","Chaos engineering and load testing","SOC2 / security compliance"]},
-    {"phase":"Phase 4 — Optimize","timeline":"18+ months","color":"#38bdf8","description":"Fine-tune for cost, performance and developer velocity.","items":["Cost optimization (Reserved instances)","GraphQL / gRPC for internal services","ML-based anomaly detection","Feature flags (LaunchDarkly)","A/B testing infrastructure","Zero-downtime deployments","Multi-cloud disaster recovery"]}
+  "roadmap":[
+    {"phase":"Phase 1 — MVP","timeline":"0–3 months","color":"#4ade80","description":"Ship fast, validate product-market fit.","items":["REST API","PostgreSQL","JWT auth","React frontend","Deploy Railway (free)","GitHub Actions CI/CD"]},
+    {"phase":"Phase 2 — Growth","timeline":"3–9 months","color":"#fbbf24","description":"Add reliability and performance.","items":["Redis caching","Message queue","Monitoring stack","CDN for assets","Rate limiting","80%+ test coverage"]},
+    {"phase":"Phase 3 — Scale","timeline":"9–18 months","color":"#a78bfa","description":"Enterprise reliability and global reach.","items":["Kubernetes (EKS)","Multi-region","Kafka streaming","DB sharding","Global CDN","SOC2 compliance"]},
+    {"phase":"Phase 4 — Optimize","timeline":"18+ months","color":"#38bdf8","description":"Cost and performance fine-tuning.","items":["Reserved instances","gRPC internal","ML anomaly detection","Feature flags","Zero-downtime deploys"]}
   ],
-  "tradeoffs": [
+  "costs":[
+    {"phase":"Phase 1 (MVP)","color":"#4ade80","items":[{"name":"Hosting (Railway)","cost":"$0"},{"name":"Database","cost":"$0"},{"name":"Auth","cost":"$0"},{"name":"CI/CD","cost":"$0"}],"total":"~$0/mo","note":"Fully free tier"},
+    {"phase":"Phase 2 (Growth)","color":"#fbbf24","items":[{"name":"AWS RDS","cost":"$25/mo"},{"name":"ElastiCache","cost":"$16/mo"},{"name":"EC2 (2x)","cost":"$40/mo"},{"name":"CloudFront","cost":"$5/mo"}],"total":"~$86/mo","note":"Small team budget"},
+    {"phase":"Phase 3 (Scale)","color":"#a78bfa","items":[{"name":"EKS Cluster","cost":"$150/mo"},{"name":"RDS Multi-AZ","cost":"$200/mo"},{"name":"Kafka MSK","cost":"$180/mo"},{"name":"CDN + S3","cost":"$50/mo"}],"total":"~$580/mo","note":"Scales with traffic"},
+    {"phase":"Phase 4 (Optimize)","color":"#38bdf8","items":[{"name":"Reserved EC2","cost":"$100/mo"},{"name":"All services","cost":"$300/mo"},{"name":"Monitoring","cost":"$60/mo"},{"name":"Security","cost":"$40/mo"}],"total":"~$500/mo","note":"Optimized costs"}
+  ],
+  "tradeoffs":[
     {"type":"pro","text":"Microservices allow independent scaling of each component"},
     {"type":"con","text":"Distributed systems add operational complexity and network latency"},
     {"type":"pro","text":"Event-driven architecture decouples services and improves resilience"},
     {"type":"con","text":"Eventual consistency can lead to stale reads in some scenarios"},
     {"type":"pro","text":"Managed cloud services reduce DevOps burden significantly"},
-    {"type":"con","text":"Cloud vendor lock-in makes migration expensive later"},
-    {"type":"pro","text":"Horizontal scaling handles traffic spikes without downtime"},
-    {"type":"con","text":"Stateless services require external session management (Redis)"}
+    {"type":"con","text":"Cloud vendor lock-in makes migration expensive later"}
   ],
-  "scalability": "Start monolithic to ship fast, extract services only when a specific component becomes a bottleneck. Use read replicas before sharding. Add caching aggressively — 80% of reads can typically be served from cache. Use async queues for anything that doesn't need synchronous response. Monitor p95 latency, not just averages. Set up autoscaling based on CPU and request queue depth. Plan for 10x current load at all times."
+  "scalability":"Start monolithic to ship fast. Extract services when a component bottlenecks. Use read replicas before sharding. Add caching — 80% of reads hit cache. Use async queues for non-synchronous ops. Monitor p95 latency. Set autoscaling on CPU + queue depth. Plan for 10x current load."
 }`;
 
   try{
-    const msgs=['Designing architecture...','Comparing free vs paid stacks...','Building roadmap...','Analyzing tradeoffs...'];
+    const msgs=['Designing architecture...','Comparing stacks...','Building roadmap...','Estimating costs...'];
     let mi=0;const ltxt=document.getElementById('loadingTxt');
-    const lInt=setInterval(()=>{mi=(mi+1)%msgs.length;ltxt.textContent=msgs[mi];},1400);
+    const lInt=setInterval(()=>{mi=(mi+1)%msgs.length;ltxt.textContent=msgs[mi];},1200);
 
-    const res=await fetch(GROQ_URL,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[{role:'user',content:aiPrompt}],max_tokens:4000,temperature:.4})
-    });
+    const res=await fetch(GROQ_URL,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[{role:'user',content:aiPrompt}],max_tokens:4000,temperature:.4})});
     clearInterval(lInt);
     const data=await res.json();
     if(!res.ok||data.error)throw new Error(data.error?.message||'API error');
@@ -271,86 +381,114 @@ Respond ONLY with valid JSON, no markdown, no extra text:
     const clean=raw.replace(/```json|```/gm,'').trim();
     let design;
     try{design=JSON.parse(clean);}
-    catch{const m=clean.match(/\{[\s\S]*\}/);if(!m)throw new Error('Could not parse response. Try again.');design=JSON.parse(m[0]);}
+    catch{const m=clean.match(/\{[\s\S]*\}/);if(!m)throw new Error('Could not parse response.');design=JSON.parse(m[0]);}
+    currentDesign=design;
     renderDesign(design);
+    initChat(design);
   }catch(e){
-    document.getElementById('loading').classList.remove('show');
     const eb=document.getElementById('errBox');eb.innerHTML='❌ <strong>Error:</strong> '+e.message;eb.classList.add('show');
   }finally{
-    btn.disabled=false;btn.textContent='⚡ Generate Full Design';
+    btn.disabled=false;btn.textContent='⚡ Generate';
     document.getElementById('loading').classList.remove('show');
   }
 }
 
 function renderDesign(d){
   document.getElementById('output').style.display='block';
-  const s=d.stats||{};
-  document.getElementById('statsRow').innerHTML=
-    Object.entries({RPS:s.rps,Latency:s.latency,Availability:s.availability,Storage:s.storage,Engineers:s.engineers})
-    .map(([l,v])=>`<div class="stat-mini"><div class="stat-val">${v||'—'}</div><div class="stat-lbl">${l}</div></div>`).join('');
 
+  // Stats with animation
+  const s=d.stats||{};
+  const statEntries=Object.entries({RPS:s.rps,Latency:s.latency,Uptime:s.availability,Storage:s.storage,Engineers:s.engineers});
+  document.getElementById('statsRow').innerHTML=statEntries.map(([l,v])=>
+    `<div class="stat-mini"><div class="stat-val">${v||'—'}</div><div class="stat-lbl">${l}</div></div>`).join('');
+
+  // Architecture SVG
   renderArchSVG(d.components||[],d.connections||[]);
 
+  // Components
   document.getElementById('components').innerHTML=(d.components||[]).map(c=>`
-    <div style="background:#070b13;border:.5px solid var(--bg3);border-radius:8px;padding:14px;margin-bottom:10px;border-left:3px solid ${c.color||'var(--purple)'};">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
-        <span style="font-size:13px;font-weight:700;color:${c.color||'var(--purple)'};">${c.name}</span>
-        <span style="font-size:10px;padding:2px 8px;border-radius:12px;background:${c.color||'var(--purple)'}18;color:${c.color||'var(--purple)'};">${c.layer||''}</span>
+    <div class="comp-card" style="border-left-color:${c.color||'var(--purple)'};">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <span style="font-size:16px;">${c.icon||'📦'}</span>
+        <span style="font-size:12px;font-weight:700;color:${c.color||'var(--purple)'};">${c.name}</span>
+        <span style="margin-left:auto;font-size:9px;padding:2px 7px;border-radius:10px;background:${c.color||'var(--purple)'}18;color:${c.color||'var(--purple)'};">${c.layer||''}</span>
       </div>
-      <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">${c.description}</div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap;">${(c.technologies||[]).map(t=>`<span style="font-size:10px;padding:2px 8px;border-radius:4px;background:${c.color||'var(--purple)'}15;color:${c.color||'var(--purple)'};border:.5px solid ${c.color||'var(--purple)'}30;">${t}</span>`).join('')}</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:8px;">${c.description}</div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap;">${(c.technologies||[]).map(t=>`<span style="font-size:10px;padding:2px 7px;border-radius:4px;background:${c.color||'var(--purple)'}15;color:${c.color||'var(--purple)'};border:.5px solid ${c.color||'var(--purple)'}30;">${t}</span>`).join('')}</div>
     </div>`).join('');
 
-  const rows=(d.stackComparison||[]).map(row=>`
-    <tr>
-      <td><span class="layer-name">${row.layer}</span></td>
-      <td>${(row.free||[]).map(f=>`<span class="free-tag">${f}</span>`).join('')}</td>
-      <td>${(row.paid||[]).map(p=>`<span class="paid-tag">${p}</span>`).join('')}</td>
-      <td><span class="best-tag">★ ${row.recommended||''}</span></td>
-      <td style="color:var(--muted);font-size:12px;">${row.why||''}</td>
-    </tr>`).join('');
+  // Stack table
   document.getElementById('stackTable').innerHTML=`
     <thead><tr><th>Layer</th><th>Free Options</th><th>Paid Options</th><th>Recommended</th><th>Why</th></tr></thead>
-    <tbody>${rows}</tbody>`;
+    <tbody>${(d.stackComparison||[]).map(r=>`
+    <tr>
+      <td style="font-weight:700;color:#f1f5f9;">${r.layer}</td>
+      <td>${(r.free||[]).map(f=>`<span class="free-tag">${f}</span>`).join('')}</td>
+      <td>${(r.paid||[]).map(p=>`<span class="paid-tag">${p}</span>`).join('')}</td>
+      <td><span class="best-tag">★ ${r.recommended||''}</span></td>
+      <td style="color:var(--muted);">${r.why||''}</td>
+    </tr>`).join('')}</tbody>`;
 
+  // Timeline roadmap
   const phases=['🌱','📈','🚀','✨'];
   document.getElementById('roadmapContent').innerHTML=(d.roadmap||[]).map((p,i)=>`
-    <div class="roadmap-phase" style="border-left:3px solid ${p.color};">
-      <div class="phase-header">
-        <div class="phase-num" style="background:${p.color}20;color:${p.color};">${phases[i]||'⚡'}</div>
-        <div><div class="phase-title" style="color:${p.color};">${p.phase}</div></div>
-        <div class="phase-timeline">${p.timeline}</div>
+    <div class="tl-item">
+      <div class="tl-dot" style="border-color:${p.color};color:${p.color};">${phases[i]||'⚡'}</div>
+      <div class="tl-card" style="border-left:2px solid ${p.color};">
+        <div class="tl-header">
+          <span class="tl-phase" style="color:${p.color};">${p.phase}</span>
+          <span class="tl-time">${p.timeline}</span>
+        </div>
+        <div class="tl-desc">${p.description}</div>
+        <div class="tl-items">${(p.items||[]).map(item=>`<span class="tl-item-tag" style="background:${p.color}12;color:${p.color};border:.5px solid ${p.color}30;">✓ ${item}</span>`).join('')}</div>
       </div>
-      <div class="phase-desc">${p.description}</div>
-      <div class="phase-items">${(p.items||[]).map(item=>`<span class="phase-item" style="background:${p.color}12;color:${p.color};border:.5px solid ${p.color}30;">✓ ${item}</span>`).join('')}</div>
     </div>`).join('');
 
+  // Cost estimator
+  document.getElementById('costContent').innerHTML=(d.costs||[]).map(c=>`
+    <div class="cost-card" style="border-top:2px solid ${c.color};">
+      <div class="cost-phase" style="color:${c.color};">${c.phase}</div>
+      ${(c.items||[]).map(i=>`<div class="cost-item"><span style="color:var(--muted);">${i.name}</span><span>${i.cost}</span></div>`).join('')}
+      <div class="cost-item"><span>Total</span><span class="cost-total">${c.total}</span></div>
+      <div class="cost-lbl" style="margin-top:8px;">${c.note||''}</div>
+    </div>`).join('');
+
+  // Tradeoffs
   document.getElementById('tradeoffsContent').innerHTML=(d.tradeoffs||[]).map(t=>`
     <div class="tradeoff ${t.type}"><span>${t.type==='pro'?'✅':'⚠️'}</span><span>${t.text}</span></div>`).join('');
   document.getElementById('scalabilityContent').textContent=d.scalability||'';
+
   document.getElementById('output').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 function renderArchSVG(comps,conns){
-  const W=700,H=420;
+  const W=680,H=400;
   const pos=layoutByLayer(comps,W,H);
-  let svg=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:${W}px;background:#040810;border-radius:8px;">`;
-  svg+=`<defs><marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#334155"/></marker></defs>`;
+  let svg=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:${W}px;">`;
+  svg+=`<defs>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#334155"/></marker>
+    <filter id="glow"><feGaussianBlur stdDeviation="2" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>`;
+  // Draw connections first
   conns.forEach(c=>{
     const f=pos[c.from],t=pos[c.to];if(!f||!t)return;
-    svg+=`<line x1="${f.cx}" y1="${f.cy}" x2="${t.cx}" y2="${t.cy}" stroke="#1e293b" stroke-width="1.5" marker-end="url(#arr)" stroke-dasharray="5,3"/>`;
+    const mx=(f.cx+t.cx)/2,my=(f.cy+t.cy)/2;
+    svg+=`<path d="M${f.cx},${f.cy} Q${mx},${my} ${t.cx},${t.cy}" stroke="#1e293b" stroke-width="1.5" fill="none" marker-end="url(#arr)" stroke-dasharray="5,3"/>`;
   });
+  // Draw nodes
   comps.forEach(c=>{
-    const p=pos[c.name];if(!p)return;const col=c.color||'#64748b';
-    svg+=`<rect x="${p.x}" y="${p.y}" width="100" height="46" rx="8" fill="${col}15" stroke="${col}" stroke-width="1.5"/>`;
+    const p=pos[c.name];if(!p)return;
+    const col=c.color||'#64748b';
+    svg+=`<rect x="${p.x}" y="${p.y}" width="94" height="52" rx="8" fill="${col}18" stroke="${col}" stroke-width="1.5"/>`;
+    svg+=`<text x="${p.cx}" y="${p.y+16}" text-anchor="middle" font-size="14" fill="${col}">${c.icon||'📦'}</text>`;
     const words=c.name.split(' ');
     if(words.length<=2){
-      svg+=`<text x="${p.cx}" y="${p.cy+4}" text-anchor="middle" font-size="9.5" fill="${col}" font-family="system-ui" font-weight="700">${c.name}</text>`;
+      svg+=`<text x="${p.cx}" y="${p.y+32}" text-anchor="middle" font-size="9" fill="${col}" font-family="system-ui" font-weight="700">${c.name}</text>`;
     }else{
-      svg+=`<text x="${p.cx}" y="${p.cy-4}" text-anchor="middle" font-size="9" fill="${col}" font-family="system-ui" font-weight="700">${words.slice(0,2).join(' ')}</text>`;
-      svg+=`<text x="${p.cx}" y="${p.cy+8}" text-anchor="middle" font-size="9" fill="${col}" font-family="system-ui" font-weight="700">${words.slice(2).join(' ')}</text>`;
+      svg+=`<text x="${p.cx}" y="${p.y+29}" text-anchor="middle" font-size="8.5" fill="${col}" font-family="system-ui" font-weight="700">${words.slice(0,2).join(' ')}</text>`;
+      svg+=`<text x="${p.cx}" y="${p.y+40}" text-anchor="middle" font-size="8.5" fill="${col}" font-family="system-ui" font-weight="700">${words.slice(2).join(' ')}</text>`;
     }
-    svg+=`<text x="${p.cx}" y="${p.cy+20}" text-anchor="middle" font-size="7.5" fill="#64748b" font-family="system-ui">${(c.technologies||[])[0]||''}</text>`;
+    svg+=`<text x="${p.cx}" y="${p.y+49}" text-anchor="middle" font-size="7" fill="#475569" font-family="system-ui">${(c.technologies||[])[0]||''}</text>`;
   });
   svg+='</svg>';
   document.getElementById('archDiagram').innerHTML=svg;
@@ -363,12 +501,55 @@ function layoutByLayer(comps,W,H){
   layers.forEach((l,row)=>{
     const items=byLayer[l];
     items.forEach((c,col)=>{
-      const colW=W/(items.length+1);const x=colW*(col+1)-50;const y=row*rowH+rowH/2-23;
-      pos[c.name]={x,y,cx:x+50,cy:y+23};
+      const colW=W/(items.length+1);const x=colW*(col+1)-47;const y=row*rowH+rowH/2-26;
+      pos[c.name]={x,y,cx:x+47,cy:y+26};
     });
   });
   return pos;
 }
+
+// ── CHAT ──
+let cmid=0;
+function initChat(design){
+  chatHistory=[{role:'system',content:`You are an expert solutions architect. The user just generated a system design for: "${design.title}". Here is the full design context: ${JSON.stringify({components:design.components,stackComparison:design.stackComparison,scalability:design.scalability})}. Answer questions about this specific design concisely in 2-3 sentences.`}];
+  document.getElementById('chatMsgs').innerHTML='';
+  chatBot(`✅ Design generated for <strong>${design.title}</strong>! Ask me anything about this architecture — scaling, costs, alternatives, trade-offs.`);
+  setChatChips(['How would I scale to 10x?','What would this cost on AWS?','What are the biggest risks?','Best database choice?','How to handle failover?']);
+}
+
+function setChatChips(arr){
+  document.getElementById('chatChips').innerHTML=arr.map(h=>`<div class="chat-chip" onclick="quickChat('${h.replace(/'/g,"\\'")}')">${h}</div>`).join('');
+}
+function quickChat(t){document.getElementById('chatInp').value=t;chatSend();}
+
+async function chatSend(){
+  const inp=document.getElementById('chatInp');const msg=inp.value.trim();if(!msg)return;
+  if(!currentDesign){chatBot('Generate a design first, then I can answer questions about it!');return;}
+  addChatMsg('user',msg);inp.value='';
+  chatHistory.push({role:'user',content:msg});
+  const id=addChatMsg('ai','<span class="dots"><span></span><span></span><span></span></span>');
+  try{
+    const res=await fetch(GROQ_URL,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:chatHistory,max_tokens:300,temperature:.5})});
+    const data=await res.json();
+    const reply=data.choices?.[0]?.message?.content||'Sorry, I could not answer that.';
+    chatHistory.push({role:'assistant',content:reply});
+    updChatMsg(id,reply);
+    setChatChips(['Tell me more','What about security?','How to reduce cost?','Alternative approach?']);
+  }catch(e){updChatMsg(id,'⚠️ Error: '+e.message);}
+}
+
+function chatBot(html){return addChatMsg('ai',html);}
+function addChatMsg(role,html){
+  const id='cm'+(++cmid),isU=role==='user';
+  document.getElementById('chatMsgs').innerHTML+=`<div class="cmsg ${role}" id="${id}"><div class="cmav" style="background:${isU?'rgba(167,139,250,.1)':'rgba(74,222,128,.1)'}">${isU?'👤':'🤖'}</div><div class="cbbl">${html}</div></div>`;
+  document.getElementById('chatMsgs').scrollTop=99999;return id;
+}
+function updChatMsg(id,html){const el=document.getElementById(id);if(el)el.querySelector('.cbbl').innerHTML=html;document.getElementById('chatMsgs').scrollTop=99999;}
+
+// Init chat with welcome
+chatBot('👋 Enter a system above and I\'ll generate the full design. Then ask me anything!');
+setChatChips(['Design Uber for me','What is a microservice?','Best stack for startups?']);
 </script>
 </body>
 </html>
