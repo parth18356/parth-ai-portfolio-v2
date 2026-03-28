@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>AI Coding Tutor — Parth.ai</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230f172a'/><rect x='25' y='30' width='50' height='45' rx='10' fill='none' stroke='%2322d3ee' stroke-width='4'/><circle cx='38' cy='48' r='5' fill='%2322d3ee'/><circle cx='62' cy='48' r='5' fill='%2322d3ee'/><rect x='38' y='62' width='24' height='4' rx='2' fill='%234ade80'/></svg>" type="image/svg+xml">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#0a0a0f;--bg2:#0f172a;--bg3:#1e293b;--cyan:#22d3ee;--green:#4ade80;--blue:#38bdf8;--purple:#a78bfa;--yellow:#fbbf24;--red:#f87171;--text:#e2e8f0;--muted:#64748b}
@@ -74,10 +75,24 @@ nav{background:var(--bg2);border-bottom:1px solid var(--bg3);padding:12px 24px;d
 .btn-p{background:rgba(167,139,250,.1);color:var(--purple);border:1px solid rgba(167,139,250,.2)}
 .btn-h{background:rgba(251,191,36,.1);color:var(--yellow);border:1px solid rgba(251,191,36,.2)}
 .btn-r{background:rgba(248,113,113,.1);color:var(--red);border:1px solid rgba(248,113,113,.2)}
-.editor{flex:1;background:#040810;border:1px solid var(--bg3);border-radius:8px;padding:12px;font-size:13px;color:var(--green);font-family:'Courier New',monospace;resize:none;line-height:1.8;outline:none;min-height:120px}
-.editor:focus{border-color:var(--cyan)}
+.editor-outer{flex:1;display:flex;flex-direction:column;border:1px solid var(--bg3);border-radius:8px;overflow:hidden;min-height:120px;}
+.editor-outer:focus-within{border-color:var(--cyan);}
+.editor-bar{display:flex;align-items:center;justify-content:space-between;padding:6px 12px;background:#040810;border-bottom:1px solid var(--bg3);}
+.editor-dots{display:flex;gap:5px;}
+.edot{width:9px;height:9px;border-radius:50%;}
+.editor-inner{position:relative;flex:1;display:flex;}
+.line-nums{width:38px;background:#040810;padding:12px 0;text-align:right;font-family:'Courier New',monospace;font-size:12px;color:#334155;line-height:1.8;pointer-events:none;user-select:none;flex-shrink:0;padding-right:7px;border-right:1px solid var(--bg3);}
+.editor{flex:1;background:#040810;border:none;padding:12px;font-size:12px;color:#abb2bf;font-family:'Courier New',monospace;resize:none;line-height:1.8;outline:none;tab-size:4;caret-color:var(--cyan);}
+.editor::selection{background:rgba(34,211,238,.2);}
 .run-out{background:#040810;border:1px solid var(--bg3);border-radius:7px;padding:9px 12px;margin-top:7px;font-size:12px;font-family:'Courier New',monospace;display:none;max-height:90px;overflow-y:auto;white-space:pre-wrap}
 .run-out.show{display:block}
+.code-block-wrap{border-radius:8px;overflow:hidden;border:1px solid var(--bg3);margin-top:6px;}
+.code-block-hdr{display:flex;align-items:center;justify-content:space-between;padding:6px 12px;background:#070b13;border-bottom:1px solid var(--bg3);}
+.code-block-lang{font-size:10px;color:var(--muted);font-family:'Courier New',monospace;}
+.copy-sm{font-size:10px;padding:2px 8px;border-radius:4px;background:rgba(34,211,238,.1);color:var(--cyan);border:.5px solid rgba(34,211,238,.2);cursor:pointer;}
+.code-block-wrap pre{margin:0!important;border-radius:0!important;}
+.code-block-wrap code{font-size:12px!important;font-family:'Courier New',monospace!important;line-height:1.7!important;}
+.hljs{background:#040810!important;padding:12px!important;}
 
 /* AI LIVE REVIEW TOAST */
 .ai-toast{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);background:var(--bg2);border:1px solid var(--cyan);border-radius:10px;padding:10px 16px;font-size:12px;color:var(--text);max-width:400px;width:90%;z-index:50;display:none;line-height:1.6;box-shadow:0 4px 24px rgba(0,0,0,.4)}
@@ -160,7 +175,20 @@ nav{background:var(--bg2);border-bottom:1px solid var(--bg3);padding:12px 24px;d
             <button class="btn btn-r" onclick="skipQ()">Skip</button>
           </div>
         </div>
-        <textarea class="editor" id="editor" oninput="onType()" placeholder="# Write your solution here..."></textarea>
+        <div class="editor-outer">
+          <div class="editor-bar">
+            <div class="editor-dots">
+              <div class="edot" style="background:#ef4444"></div>
+              <div class="edot" style="background:#f59e0b"></div>
+              <div class="edot" style="background:#22c55e"></div>
+            </div>
+            <span style="font-size:10px;color:var(--muted);font-family:'Courier New',monospace;">solution.py</span>
+          </div>
+          <div class="editor-inner">
+            <div class="line-nums" id="lineNums">1</div>
+            <textarea class="editor" id="editor" oninput="onType();updateLineNums()" onscroll="syncScroll()" onkeydown="handleTab(event)" placeholder="# Write your solution here..."></textarea>
+          </div>
+        </div>
         <div class="run-out" id="runOut"></div>
       </div>
       <div class="ai-toast" id="aiToast">
@@ -495,14 +523,18 @@ function submitCode(){
   const timeTaken=secs;
   aiCall(
     `You are a strict code evaluator. Problem: "${q.t}".\nExample: Input: ${q.inp} → Output: ${q.out}\nReference:\n${q.sol}\nStudent code:\n${code}\n\nDoes this correctly solve the problem?\nReply MUST start with ✅ if correct or ❌ if wrong.\nThen 1-2 sentences: if correct, explain WHY it works well (time/space complexity). If wrong, give ONE specific hint without revealing the solution.`
-  ).then(r=>{
+  )  .then(r=>{
     const ok=r.startsWith('✅');
-    showOut(r,ok?'var(--green)':'var(--red)');
+    if(ok){
+      showOutCode(r,'');
+    } else {
+      showOut(`<span style="color:var(--red)">${r}</span>`,'');
+    }
     updatePerf(curTopic,ok,false,timeTaken);
     if(ok){
       const bonus=timeTaken<30?20:timeTaken<60?15:10;
       xp+=bonus;document.getElementById('xpVal').textContent=xp;clearInterval(timerInt);
-      bot(`🎉 ${r}<br><br>+${bonus} XP! ${timeTaken<30?'⚡ Super fast!':timeTaken<60?'Great pace!':''}`);
+      bot(`🎉 ${r}<br><br>+${bonus} XP! ${timeTaken<30?'⚡ Super fast!':timeTaken<60?'Great pace!':''}<br><br><strong>Reference solution:</strong>${makeCodeBlock(q.sol,'')}`);
       setChips(['Explain time complexity','What are edge cases?','Show me the optimal solution','Next problem']);
     }else{
       bot(`❌ ${r}`);
@@ -520,7 +552,21 @@ function nextQ(){
   renderSidebar();
 }
 
-function showOut(msg,color){const el=document.getElementById('runOut');el.style.color=color;el.textContent=msg;el.classList.add('show');}
+function showOut(msg,color){
+  const el=document.getElementById('runOut');
+  el.style.color=color;
+  el.style.display='block';
+  el.classList.add('show');
+  el.innerHTML=msg;
+}
+
+function showOutCode(msg,code){
+  const el=document.getElementById('runOut');
+  el.style.color='var(--green)';
+  el.style.display='block';
+  el.classList.add('show');
+  el.innerHTML=`<span style="color:var(--green)">${msg}</span>${code?makeCodeBlock(code,''):''}`;
+}
 
 // ── CHAT ──
 function send(){
@@ -568,6 +614,43 @@ async function aiCall(prompt){
 initPerf();renderSidebar();
 bot('👋 Welcome! I\'m your <strong>adaptive AI tutor</strong>.<br><br>Pick a topic on the left — I\'ll <strong>teach you the concept first</strong>, then give you a question. I\'ll also <strong>watch your code live</strong> and give you feedback every 30 seconds! 🚀');
 setChips(['Start with Arrays','What\'s the easiest topic?','How does adaptive mode work?','Show my weak areas']);
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+<script>
+// ── LINE NUMBERS ──
+function updateLineNums(){
+  const lines=(document.getElementById('editor').value||'').split('\n').length;
+  document.getElementById('lineNums').innerHTML=Array.from({length:lines},(_,i)=>i+1).join('<br>');
+}
+function syncScroll(){
+  const ta=document.getElementById('editor');
+  document.getElementById('lineNums').scrollTop=ta.scrollTop;
+}
+function handleTab(e){
+  if(e.key==='Tab'){
+    e.preventDefault();
+    const ta=document.getElementById('editor');
+    const s=ta.selectionStart;
+    ta.value=ta.value.substring(0,s)+'    '+ta.value.substring(ta.selectionEnd);
+    ta.selectionStart=ta.selectionEnd=s+4;
+    updateLineNums();
+  }
+}
+
+// ── HIGHLIGHTED CODE BLOCK ──
+function makeCodeBlock(code,copyExpr){
+  let highlighted;
+  try{highlighted=hljs.highlight(code,{language:'python'}).value;}
+  catch{highlighted=hljs.highlightAuto(code).value;}
+  return `<div class="code-block-wrap">
+    <div class="code-block-hdr">
+      <span class="code-block-lang">python</span>
+      ${copyExpr?`<button class="copy-sm" onclick="navigator.clipboard.writeText(${copyExpr}).then(()=>alert('Copied!'))">📋 Copy</button>`:''}
+    </div>
+    <pre><code class="hljs language-python">${highlighted}</code></pre>
+  </div>`;
+}
 </script>
 </body>
 </html>
