@@ -317,6 +317,147 @@ async function runReview(){
     const msgs=['Analyzing structure…','Finding issues…','Refactoring code…','Writing review…'];
     let mi=0;const lInt=setInterval(()=>{document.getElementById('loaderTxt').textContent=msgs[++mi%msgs.length];},1200);
 
+    const safeSrc=src.substring(0,12000).replace(/\\/g,'\\\\').replace(/`/g,'\\`').replace(/\$/g,'\\
+
+Review focus for the REPORT: ${focus}
+Language: ${lang}
+
+CODE:
+\`\`\`${lang}
+${safeSrc}
+\`\`\`
+
+CRITICAL INSTRUCTIONS FOR REFACTORED CODE:
+- The "refactored" field must fix ABSOLUTELY EVERYTHING wrong with the code — bugs, security holes, performance issues, naming, SOLID principles, error handling, edge cases, type hints, docstrings, magic numbers, dead code, inefficient algorithms, SQL injection, XSS, hardcoded secrets, missing validations — regardless of the review focus selected above.
+- The refactored code must be production-ready, clean, and complete. Do not leave anything broken or suboptimal.
+- Preserve the original logic and intent but improve everything else.
+${wantComments?'- The "commented_code" field: take the REFACTORED version and add professional inline comments explaining every function, class, and non-obvious line.':''}
+
+Return ONLY raw JSON (no markdown fences, no extra text):
+{"scores":{"overall":72,"reusability":65,"performance":80,"security":70},"summary":"2-3 sentence overview of all issues found","critical":[{"title":"...","description":"...","fix":"short snippet showing the fix"}],"warnings":[{"title":"...","description":"...","fix":"short snippet showing the fix"}],"improvements":[{"title":"...","description":"...","fix":"short snippet showing the fix"}],"refactored":"COMPLETE fully corrected production-ready code with every possible issue fixed"${wantComments?',"commented_code":"refactored code with professional inline comments on every function and key line"':''},"positives":["specific strength 1","specific strength 2","specific strength 3"]}`;
+
+    const res=await fetch(GROQ_URL,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[{role:'user',content:prompt}],max_tokens:4000,temperature:.1})});
+    clearInterval(lInt);
+    const data=await res.json();
+    if(!res.ok||data.error)throw new Error(data.error?.message||'API error');
+    const raw=data.choices?.[0]?.message?.content||'';
+    if(!raw)throw new Error('Empty response.');
+    let parsed;
+    const clean=raw.replace(/```json|```/gm,'').trim();
+    function safeParseJSON(str){
+      // Remove bad control characters except \n \r \t
+      const sanitized=str.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g,'');
+      // Escape unescaped newlines/tabs inside JSON string values
+      const fixed=sanitized.replace(/"((?:[^"\\]|\\.)*)"/gs,(match,inner)=>{
+        const escaped=inner
+          .replace(/\n/g,'\\n')
+          .replace(/\r/g,'\\r')
+          .replace(/\t/g,'\\t');
+        return `"${escaped}"`;
+      });
+      return JSON.parse(fixed);
+    }
+    try{parsed=safeParseJSON(clean);}
+    catch{
+      const m=clean.match(/\{[\s\S]*\}/);
+      if(!m)throw new Error('Bad JSON response from AI. Please try again.');
+      try{parsed=safeParseJSON(m[0]);}
+      catch(e){throw new Error('Could not parse AI response. Try again.');}
+    }
+    currentResult=parsed;currentResult._lang=lang;
+    setLoading(false);renderOutput(parsed,lang);
+  }catch(e){setLoading(false);showErr(e.message);}
+}
+
+// ── RENDER OUTPUT ──
+function scoreCol(v){return v>=80?'#4ade80':v>=55?'#fbbf24':'#f87171';}
+
+function renderOutput(r,lang){
+  document.getElementById('output').classList.add('show');
+  const sc=r.scores||{};
+  document.getElementById('scoreGrid').innerHTML=[['Overall',sc.overall||0],['Reusability',sc.reusability||0],['Performance',sc.performance||0],['Security',sc.security||0]].map(([l,v])=>{
+    const c=scoreCol(v);
+    return `<div class="score-card"><div class="score-val" style="color:${c}">${v}<span style="font-size:14px">%</span></div><div class="prog"><div class="prog-fill" style="width:${v}%;background:${c}"></div></div><div class="score-lbl">${l}</div></div>`;
+  }).join('');
+
+  const tabs=[{id:'review',label:'📋 Review'}];
+  if(r.commented_code)tabs.push({id:'comments',label:'💬 Commented'});
+  if(r.refactored)tabs.push({id:'refactored',label:'🔧 Fully Fixed'});
+  document.getElementById('outTabs').innerHTML=tabs.map((t,i)=>`<button class="out-tab ${i===0?'active':''}" onclick="switchOut('${t.id}',this)">${t.label}</button>`).join('');
+
+  let html='';
+  if(r.summary)html+=`<div class="summary-box">${esc(r.summary)}</div>`;
+  if(r.critical?.length)html+=`<div class="shdr">🔴 Critical (${r.critical.length})</div>`+r.critical.map(i=>issueHtml(i,'#f87171',lang)).join('');
+  if(r.warnings?.length)html+=`<div class="shdr">🟡 Warnings (${r.warnings.length})</div>`+r.warnings.map(i=>issueHtml(i,'#fbbf24',lang)).join('');
+  if(r.improvements?.length)html+=`<div class="shdr">🔵 Improvements (${r.improvements.length})</div>`+r.improvements.map(i=>issueHtml(i,'#38bdf8',lang)).join('');
+  if(r.positives?.length)html+=`<div class="shdr">✅ What's Good</div>`+r.positives.map(p=>`<div class="positive">✓ ${esc(p)}</div>`).join('');
+
+  const cHtml=r.commented_code?`
+    <p style="font-size:13px;color:#94a3b8;margin-bottom:12px;">Professional inline comments added throughout.</p>
+    ${makeCodeBlock(r.commented_code,lang,"navigator.clipboard.writeText(currentResult.commented_code).then(()=>alert('Copied!'))")}`:
+    '<p style="color:#64748b;font-size:13px;">Enable "Add Code Comments" option and re-run.</p>';
+
+  const rHtml=r.refactored?`
+    <p style="font-size:13px;color:#94a3b8;margin-bottom:12px;">✅ Every possible issue fixed — bugs, security, performance, naming, edge cases, error handling and more. Production-ready.</p>
+    ${makeCodeBlock(r.refactored,lang,"navigator.clipboard.writeText(currentResult.refactored).then(()=>alert('Copied!'))")}`:
+    '<p style="color:#64748b;font-size:13px;">No refactored version returned.</p>';
+
+  document.getElementById('panels').innerHTML=`
+    <div class="out-panel show" id="panel-review">${html}</div>
+    <div class="out-panel" id="panel-comments">${cHtml}</div>
+    <div class="out-panel" id="panel-refactored">${rHtml}</div>`;
+}
+
+function issueHtml(i,col,lang){
+  const fixBlock=i.fix?makeCodeBlock(i.fix,lang,''):'';
+  return `<div class="issue" style="border-color:${col}">
+    <div class="ititle" style="color:${col}">${esc(i.title||'')}</div>
+    <div class="ibody">${esc(i.description||'')}${fixBlock}</div>
+  </div>`;
+}
+
+function switchOut(id,btn){
+  document.querySelectorAll('.out-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.out-panel').forEach(p=>p.classList.remove('show'));
+  btn.classList.add('active');document.getElementById('panel-'+id).classList.add('show');
+}
+function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function copyJSON(){navigator.clipboard.writeText(JSON.stringify(currentResult,null,2)).then(()=>alert('JSON copied!'));}
+function clearAll(){
+  document.getElementById('code').value='';
+  document.getElementById('lineNums').innerHTML='1';
+  files=[];renderFiles();
+  document.getElementById('output').classList.remove('show');
+  document.getElementById('errBox').classList.remove('show');
+  document.getElementById('runBtn').disabled=false;
+  document.getElementById('runBtn').textContent='▶ Run AI Review';
+}
+
+// ── DRAG DROP ──
+const dz=document.getElementById('dropZone');
+if(dz){
+  dz.addEventListener('dragover',e=>{e.preventDefault();dz.style.borderColor='#22d3ee';});
+  dz.addEventListener('dragleave',()=>{dz.style.borderColor='#334155';});
+  dz.addEventListener('drop',async e=>{
+    e.preventDefault();dz.style.borderColor='#334155';
+    const all=[];
+    async function traverse(entry){
+      if(!entry)return;
+      if(entry.isFile)await new Promise(r=>entry.file(f=>{all.push(f);r()}));
+      else if(entry.isDirectory){const rd=entry.createReader();await new Promise(r=>rd.readEntries(async es=>{for(const en of es)await traverse(en);r()}));}
+    }
+    for(const item of[...e.dataTransfer.items]){const en=item.webkitGetAsEntry?.();if(en)await traverse(en);else if(item.getAsFile)all.push(item.getAsFile());}
+    addFiles(all);
+  });
+}
+
+// Init line numbers
+updateLineNums();
+</script>
+</body>
+</html>
+);
     const prompt=`You are a senior ${lang} engineer doing a thorough production-grade code review.
 
 Review focus for the REPORT: ${focus}
