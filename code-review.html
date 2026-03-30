@@ -18,29 +18,18 @@ h1 span{color:#22d3ee}
 .sub{color:#94a3b8;font-size:13px;margin-bottom:28px;line-height:1.7}
 .card{background:#0f172a;border:1px solid #1e293b;border-radius:12px;padding:24px;margin-bottom:20px}
 .sec-label{font-size:11px;color:#22d3ee;letter-spacing:2px;text-transform:uppercase;display:block;margin-bottom:12px}
-
-/* EDITOR TABS */
 .tabs{display:flex;gap:2px;background:#070b13;border-radius:8px;padding:3px;margin-bottom:0;border:1px solid #1e293b;border-bottom:none;border-radius:8px 8px 0 0;}
 .tab-btn{flex:1;padding:9px;text-align:center;font-size:12px;border-radius:6px;cursor:pointer;border:none;background:transparent;color:#64748b;transition:all .2s}
 .tab-btn.active{background:#1e293b;color:#e2e8f0}
-
-/* CODE EDITOR WRAPPER */
 .editor-wrap{position:relative;background:#040810;border:1px solid #1e293b;border-radius:0 0 8px 8px;overflow:hidden;}
 .editor-header{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:#070b13;border-bottom:1px solid #1e293b;}
 .editor-dots{display:flex;gap:6px;}
 .edot{width:10px;height:10px;border-radius:50%;}
 .lang-select{background:#1e293b;border:none;color:#94a3b8;font-size:11px;border-radius:4px;padding:3px 8px;cursor:pointer;outline:none;}
 .lang-select option{background:#1e293b;}
-.line-nums{position:absolute;left:0;top:0;bottom:0;width:42px;background:#040810;border-right:1px solid #1e293b;padding:14px 0;text-align:right;font-family:'Courier New',monospace;font-size:13px;color:#334155;line-height:1.8;pointer-events:none;user-select:none;z-index:2;padding-right:8px;}
+.line-nums{position:absolute;left:0;top:0;bottom:0;width:42px;background:#040810;border-right:1px solid #1e293b;padding:14px 8px 14px 0;text-align:right;font-family:'Courier New',monospace;font-size:13px;color:#334155;line-height:1.8;pointer-events:none;user-select:none;z-index:2;}
 .code-editor{width:100%;min-height:240px;background:transparent;border:none;padding:14px 14px 14px 56px;font-size:13px;color:#abb2bf;font-family:'Courier New',monospace;resize:vertical;line-height:1.8;outline:none;display:block;tab-size:4;caret-color:#22d3ee;}
 .code-editor::selection{background:rgba(34,211,238,.2);}
-
-/* HIGHLIGHTED PREVIEW */
-.code-preview{display:none;padding:14px 14px 14px 56px;font-size:13px;font-family:'Courier New',monospace;line-height:1.8;overflow-x:auto;min-height:240px;background:transparent;}
-.code-preview pre{margin:0;background:transparent!important;}
-.code-preview code{background:transparent!important;font-size:13px!important;font-family:'Courier New',monospace!important;line-height:1.8!important;}
-
-/* UPLOAD */
 .drop-zone{border:1.5px dashed #334155;border-radius:10px;padding:28px 24px;text-align:center;cursor:pointer;background:#070b13;position:relative;transition:all .2s}
 .drop-zone:hover{border-color:#22d3ee;background:rgba(34,211,238,.03)}
 .drop-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
@@ -50,7 +39,6 @@ h1 span{color:#22d3ee}
 .file-item{display:flex;justify-content:space-between;align-items:center;background:rgba(34,211,238,.05);border:1px solid rgba(34,211,238,.15);border-radius:6px;padding:8px 14px;font-size:11px}
 .file-item span{color:#22d3ee}
 .file-rm{color:#f87171;background:none;border:none;cursor:pointer;font-size:16px}
-
 .opt-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin-bottom:20px}
 .opt{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:6px;border:1px solid #1e293b;background:#070b13;cursor:pointer;transition:all .2s;user-select:none}
 .opt.on{border-color:#22d3ee;background:rgba(34,211,238,.07)}
@@ -80,8 +68,6 @@ h1 span{color:#22d3ee}
 .issue{border-left:3px solid;border-radius:0 8px 8px 0;padding:14px 16px;margin-bottom:10px;background:#070b13}
 .ititle{font-size:13px;font-weight:700;margin-bottom:5px}
 .ibody{font-size:12px;color:#94a3b8;line-height:1.75}
-
-/* HIGHLIGHTED CODE BLOCKS IN OUTPUT */
 .code-block-wrap{position:relative;margin-top:10px;border-radius:8px;overflow:hidden;border:1px solid #1e293b;}
 .code-block-hdr{display:flex;align-items:center;justify-content:space-between;padding:7px 14px;background:#070b13;border-bottom:1px solid #1e293b;}
 .code-block-lang{font-size:10px;color:#64748b;font-family:'Courier New',monospace;}
@@ -89,7 +75,6 @@ h1 span{color:#22d3ee}
 .code-block-wrap pre{margin:0!important;border-radius:0!important;}
 .code-block-wrap code{font-size:12px!important;font-family:'Courier New',monospace!important;line-height:1.7!important;}
 .hljs{background:#040810!important;padding:14px!important;}
-
 .summary-box{font-size:13px;color:#f1f5f9;line-height:1.85;background:rgba(56,189,248,.05);padding:16px;border-radius:8px;border:1px solid rgba(56,189,248,.12);margin-bottom:12px}
 .positive{border-left:3px solid #4ade80;border-radius:0 8px 8px 0;padding:12px 16px;margin-bottom:8px;background:#070b13;font-size:12px;color:#d1fae5;line-height:1.7}
 .copy-btn{font-size:11px;padding:5px 12px;border-radius:4px;background:rgba(34,211,238,.1);color:#22d3ee;border:1px solid rgba(34,211,238,.2);cursor:pointer}
@@ -113,7 +98,6 @@ h1 span{color:#22d3ee}
       <button class="tab-btn active" onclick="switchTab('paste',this)">📝 Paste Code</button>
       <button class="tab-btn" onclick="switchTab('upload',this)">📁 Upload Files</button>
     </div>
-
     <div id="paste-panel">
       <div class="editor-wrap">
         <div class="editor-header">
@@ -122,7 +106,7 @@ h1 span{color:#22d3ee}
             <div class="edot" style="background:#f59e0b"></div>
             <div class="edot" style="background:#22c55e"></div>
           </div>
-          <select class="lang-select" id="langSelect" onchange="onLangChange()">
+          <select class="lang-select" id="langSelect" onchange="syncHighlight()">
             <option value="python">Python</option>
             <option value="javascript">JavaScript</option>
             <option value="typescript">TypeScript</option>
@@ -145,12 +129,11 @@ h1 span{color:#22d3ee}
         </div>
       </div>
     </div>
-
     <div id="upload-panel" style="display:none">
       <div class="drop-zone" id="dropZone">
         <input type="file" id="fileInput" multiple onchange="addFiles(this.files)">
         <div style="font-size:32px;margin-bottom:10px">📂</div>
-        <h3>Click to select files or drag & drop</h3>
+        <h3>Click to select files or drag &amp; drop</h3>
         <p>.py .cs .js .ts .java .go .cpp and more</p>
       </div>
       <div class="file-list" id="fileList"></div>
@@ -160,7 +143,7 @@ h1 span{color:#22d3ee}
   <div class="card">
     <span class="sec-label">Review Focus</span>
     <div class="opt-grid">
-      <div class="opt on" onclick="tog(this)"><input type="checkbox" checked><span>Reusability & DRY</span></div>
+      <div class="opt on" onclick="tog(this)"><input type="checkbox" checked><span>Reusability &amp; DRY</span></div>
       <div class="opt on" onclick="tog(this)"><input type="checkbox" checked><span>Performance</span></div>
       <div class="opt on" onclick="tog(this)"><input type="checkbox" checked><span>Security Issues</span></div>
       <div class="opt" onclick="tog(this)"><input type="checkbox"><span>SOLID Principles</span></div>
@@ -205,28 +188,29 @@ h1 span{color:#22d3ee}
 const GROQ_URL='/api/chat';
 let files=[],activeTab='paste',currentResult=null;
 
-// ── LANGUAGE MAP for hljs ──
-const LANG_MAP={python:'python',javascript:'javascript',typescript:'typescript',csharp:'csharp',java:'java',cpp:'cpp',go:'go',rust:'rust',sql:'sql',bash:'bash'};
-
-// ── AUTO DETECT LANGUAGE ──
 function detectLang(code){
   if(/def |import |print\(|#.*python|:\s*$/.test(code))return'python';
-  if(/using System|namespace |\.cs|Console\.Write/.test(code))return'csharp';
+  if(/using System|namespace |Console\.Write/.test(code))return'csharp';
   if(/public class|void main|System\.out/.test(code))return'java';
   if(/func |package main|fmt\./.test(code))return'go';
   if(/fn |let mut|impl |use std/.test(code))return'rust';
   if(/SELECT|INSERT|CREATE TABLE/i.test(code))return'sql';
-  if(/const |let |=>|require\(|npm/.test(code))return'javascript';
+  if(/const |let |=>|require\(/.test(code))return'javascript';
   if(/interface |type.*=.*{/.test(code))return'typescript';
   if(/#include|std::|cout/.test(code))return'cpp';
   return'python';
 }
 
-function onLangChange(){syncHighlight();}
+function syncHighlight(){
+  const code=document.getElementById('code').value;
+  const detected=detectLang(code);
+  const sel=document.getElementById('langSelect');
+  if(code.length>10)sel.value=detected;
+  updateLineNums();
+}
 
-// ── LINE NUMBERS ──
 function updateLineNums(){
-  const lines=document.getElementById('code').value.split('\n').length;
+  const lines=(document.getElementById('code').value||'').split('\n').length;
   document.getElementById('lineNums').innerHTML=Array.from({length:lines},(_,i)=>i+1).join('<br>');
 }
 
@@ -235,43 +219,25 @@ function syncScroll(){
   document.getElementById('lineNums').scrollTop=ta.scrollTop;
 }
 
-function syncHighlight(){
-  const code=document.getElementById('code').value;
-  // Auto-detect and update select
-  const detected=detectLang(code);
-  const sel=document.getElementById('langSelect');
-  if(sel.value!==detected&&code.length>10)sel.value=detected;
-  updateLineNums();
-}
-
-// ── TAB KEY ──
 function handleTab(e){
   if(e.key==='Tab'){
     e.preventDefault();
     const ta=document.getElementById('code');
-    const s=ta.selectionStart,en=ta.selectionEnd;
-    ta.value=ta.value.substring(0,s)+'    '+ta.value.substring(en);
+    const s=ta.selectionStart;
+    ta.value=ta.value.substring(0,s)+'    '+ta.value.substring(ta.selectionEnd);
     ta.selectionStart=ta.selectionEnd=s+4;
-    syncHighlight();
+    updateLineNums();
   }
 }
 
-// ── HIGHLIGHTED CODE BLOCK ──
 function makeCodeBlock(code,lang,copyFn){
-  const safeLang=LANG_MAP[lang]||'python';
+  const safeLang=lang||'python';
   let highlighted;
   try{highlighted=hljs.highlight(code,{language:safeLang}).value;}
   catch{highlighted=hljs.highlightAuto(code).value;}
-  return `<div class="code-block-wrap">
-    <div class="code-block-hdr">
-      <span class="code-block-lang">${safeLang}</span>
-      <button class="copy-btn-sm" onclick="${copyFn}">📋 Copy</button>
-    </div>
-    <pre><code class="hljs language-${safeLang}">${highlighted}</code></pre>
-  </div>`;
+  return '<div class="code-block-wrap"><div class="code-block-hdr"><span class="code-block-lang">'+safeLang+'</span>'+(copyFn?'<button class="copy-btn-sm" onclick="'+copyFn+'">📋 Copy</button>':'')+'</div><pre><code class="hljs language-'+safeLang+'">'+highlighted+'</code></pre></div>';
 }
 
-// ── TABS ──
 function switchTab(t,btn){
   activeTab=t;
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
@@ -281,14 +247,12 @@ function switchTab(t,btn){
 function tog(el){el.classList.toggle('on');el.querySelector('input').checked=el.classList.contains('on');}
 function addFiles(fl){Array.from(fl).forEach(f=>{if(!files.find(x=>x.name===f.name))files.push(f);});renderFiles();}
 function renderFiles(){
-  document.getElementById('fileList').innerHTML=files.map((f,i)=>`
-    <div class="file-item"><span>📄 ${f.name} <span style="color:#64748b;margin-left:8px">${(f.size/1024).toFixed(1)} KB</span></span>
-    <button class="file-rm" onclick="removeFile(${i})">✕</button></div>`).join('');
+  document.getElementById('fileList').innerHTML=files.map((f,i)=>'<div class="file-item"><span>📄 '+f.name+' <span style="color:#64748b;margin-left:8px">'+(f.size/1024).toFixed(1)+' KB</span></span><button class="file-rm" onclick="removeFile('+i+')">✕</button></div>').join('');
 }
 function removeFile(i){files.splice(i,1);renderFiles();}
 async function readFiles(){
   const parts=[];
-  for(const f of files){try{parts.push(`FILE: ${f.name}\n${await f.text()}`);}catch{parts.push(`FILE: ${f.name} — [unreadable]`);}}
+  for(const f of files){try{parts.push('FILE: '+f.name+'\n'+await f.text());}catch{parts.push('FILE: '+f.name+' — [unreadable]');}}
   return parts.join('\n\n');
 }
 function setLoading(on,msg){
@@ -299,10 +263,17 @@ function setLoading(on,msg){
 }
 function showErr(msg){const el=document.getElementById('errBox');el.innerHTML='❌ <strong>Error:</strong> '+msg;el.classList.add('show');}
 
-// ── MAIN REVIEW ──
+function safeParseJSON(str){
+  const sanitized=str.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g,'');
+  const fixed=sanitized.replace(/"((?:[^"\\]|\\.)*)"/gs,function(match,inner){
+    return '"'+inner.replace(/\n/g,'\\n').replace(/\r/g,'\\r').replace(/\t/g,'\\t')+'"';
+  });
+  return JSON.parse(fixed);
+}
+
 async function runReview(){
-  const code=document.getElementById('code').value.trim();
-  if(activeTab==='paste'&&!code){alert('Paste some code first.');return;}
+  const codeVal=document.getElementById('code').value.trim();
+  if(activeTab==='paste'&&!codeVal){alert('Paste some code first.');return;}
   if(activeTab==='upload'&&!files.length){alert('Upload at least one file.');return;}
   document.getElementById('errBox').classList.remove('show');
   document.getElementById('output').classList.remove('show');
@@ -310,120 +281,83 @@ async function runReview(){
   const lang=document.getElementById('langSelect').value;
 
   try{
-    const src=activeTab==='upload'?await readFiles():code;
+    const rawSrc=activeTab==='upload'?await readFiles():codeVal;
+    const src=rawSrc.substring(0,12000);
     const focus=[...document.querySelectorAll('.opt.on span')].map(el=>el.textContent).join(', ');
     const wantComments=[...document.querySelectorAll('.opt.on span')].some(el=>el.textContent.includes('Comments'));
 
     const msgs=['Analyzing structure…','Finding issues…','Refactoring code…','Writing review…'];
     let mi=0;const lInt=setInterval(()=>{document.getElementById('loaderTxt').textContent=msgs[++mi%msgs.length];},1200);
 
-    const safeSrc=src.substring(0,12000).replace(/\\/g,'\\\\').replace(/`/g,'\\`').replace(/\$/g,'\\
+    const systemMsg='You are a senior '+lang+' engineer. Do a thorough production-grade code review. Respond ONLY with raw JSON, no markdown fences, no extra text.';
 
-Review focus for the REPORT: ${focus}
-Language: ${lang}
+    const userMsg='Review focus for the REPORT: '+focus+'\n\nCode to review:\n'+src+'\n\nReturn this exact JSON structure (no markdown, no backticks, raw JSON only):\n{"scores":{"overall":72,"reusability":65,"performance":80,"security":70},"summary":"2-3 sentence overview","critical":[{"title":"issue title","description":"description","fix":"short fix snippet"}],"warnings":[{"title":"title","description":"description","fix":"short fix snippet"}],"improvements":[{"title":"title","description":"description","fix":"short fix snippet"}],"refactored":"COMPLETE fully corrected production-ready '+lang+' code"'+(wantComments?',"commented_code":"refactored code with inline comments"':'')+','+'  "positives":["strength 1","strength 2","strength 3"]}';
 
-CODE:
-\`\`\`${lang}
-${safeSrc}
-\`\`\`
-
-CRITICAL INSTRUCTIONS FOR REFACTORED CODE:
-- The "refactored" field must fix ABSOLUTELY EVERYTHING wrong with the code — bugs, security holes, performance issues, naming, SOLID principles, error handling, edge cases, type hints, docstrings, magic numbers, dead code, inefficient algorithms, SQL injection, XSS, hardcoded secrets, missing validations — regardless of the review focus selected above.
-- The refactored code must be production-ready, clean, and complete. Do not leave anything broken or suboptimal.
-- Preserve the original logic and intent but improve everything else.
-${wantComments?'- The "commented_code" field: take the REFACTORED version and add professional inline comments explaining every function, class, and non-obvious line.':''}
-
-Return ONLY raw JSON (no markdown fences, no extra text):
-{"scores":{"overall":72,"reusability":65,"performance":80,"security":70},"summary":"2-3 sentence overview of all issues found","critical":[{"title":"...","description":"...","fix":"short snippet showing the fix"}],"warnings":[{"title":"...","description":"...","fix":"short snippet showing the fix"}],"improvements":[{"title":"...","description":"...","fix":"short snippet showing the fix"}],"refactored":"COMPLETE fully corrected production-ready code with every possible issue fixed"${wantComments?',"commented_code":"refactored code with professional inline comments on every function and key line"':''},"positives":["specific strength 1","specific strength 2","specific strength 3"]}`;
-
-    const res=await fetch(GROQ_URL,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[{role:'user',content:prompt}],max_tokens:4000,temperature:.1})});
+    const res=await fetch(GROQ_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[{role:'system',content:systemMsg},{role:'user',content:userMsg}],max_tokens:4000,temperature:.1})
+    });
     clearInterval(lInt);
     const data=await res.json();
     if(!res.ok||data.error)throw new Error(data.error?.message||'API error');
     const raw=data.choices?.[0]?.message?.content||'';
     if(!raw)throw new Error('Empty response.');
+
     let parsed;
     const clean=raw.replace(/```json|```/gm,'').trim();
-    function safeParseJSON(str){
-      // Remove bad control characters except \n \r \t
-      const sanitized=str.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g,'');
-      // Escape unescaped newlines/tabs inside JSON string values
-      const fixed=sanitized.replace(/"((?:[^"\\]|\\.)*)"/gs,(match,inner)=>{
-        const escaped=inner
-          .replace(/\n/g,'\\n')
-          .replace(/\r/g,'\\r')
-          .replace(/\t/g,'\\t');
-        return `"${escaped}"`;
-      });
-      return JSON.parse(fixed);
-    }
     try{parsed=safeParseJSON(clean);}
     catch{
       const m=clean.match(/\{[\s\S]*\}/);
-      if(!m)throw new Error('Bad JSON response from AI. Please try again.');
+      if(!m)throw new Error('Bad JSON from AI. Please try again.');
       try{parsed=safeParseJSON(m[0]);}
-      catch(e){throw new Error('Could not parse AI response. Try again.');}
+      catch(e){throw new Error('Could not parse AI response. Please try again.');}
     }
     currentResult=parsed;currentResult._lang=lang;
     setLoading(false);renderOutput(parsed,lang);
   }catch(e){setLoading(false);showErr(e.message);}
 }
 
-// ── RENDER OUTPUT ──
 function scoreCol(v){return v>=80?'#4ade80':v>=55?'#fbbf24':'#f87171';}
 
 function renderOutput(r,lang){
   document.getElementById('output').classList.add('show');
   const sc=r.scores||{};
-  document.getElementById('scoreGrid').innerHTML=[['Overall',sc.overall||0],['Reusability',sc.reusability||0],['Performance',sc.performance||0],['Security',sc.security||0]].map(([l,v])=>{
-    const c=scoreCol(v);
-    return `<div class="score-card"><div class="score-val" style="color:${c}">${v}<span style="font-size:14px">%</span></div><div class="prog"><div class="prog-fill" style="width:${v}%;background:${c}"></div></div><div class="score-lbl">${l}</div></div>`;
+  document.getElementById('scoreGrid').innerHTML=[['Overall',sc.overall||0],['Reusability',sc.reusability||0],['Performance',sc.performance||0],['Security',sc.security||0]].map(function(pair){
+    const l=pair[0],v=pair[1],c=scoreCol(v);
+    return '<div class="score-card"><div class="score-val" style="color:'+c+'">'+v+'<span style="font-size:14px">%</span></div><div class="prog"><div class="prog-fill" style="width:'+v+'%;background:'+c+'"></div></div><div class="score-lbl">'+l+'</div></div>';
   }).join('');
 
   const tabs=[{id:'review',label:'📋 Review'}];
   if(r.commented_code)tabs.push({id:'comments',label:'💬 Commented'});
   if(r.refactored)tabs.push({id:'refactored',label:'🔧 Fully Fixed'});
-  document.getElementById('outTabs').innerHTML=tabs.map((t,i)=>`<button class="out-tab ${i===0?'active':''}" onclick="switchOut('${t.id}',this)">${t.label}</button>`).join('');
+  document.getElementById('outTabs').innerHTML=tabs.map(function(t,i){return '<button class="out-tab '+(i===0?'active':'')+'" onclick="switchOut(\''+t.id+'\',this)">'+t.label+'</button>';}).join('');
 
   let html='';
-  if(r.summary)html+=`<div class="summary-box">${esc(r.summary)}</div>`;
-  if(r.critical?.length)html+=`<div class="shdr">🔴 Critical (${r.critical.length})</div>`+r.critical.map(i=>issueHtml(i,'#f87171',lang)).join('');
-  if(r.warnings?.length)html+=`<div class="shdr">🟡 Warnings (${r.warnings.length})</div>`+r.warnings.map(i=>issueHtml(i,'#fbbf24',lang)).join('');
-  if(r.improvements?.length)html+=`<div class="shdr">🔵 Improvements (${r.improvements.length})</div>`+r.improvements.map(i=>issueHtml(i,'#38bdf8',lang)).join('');
-  if(r.positives?.length)html+=`<div class="shdr">✅ What's Good</div>`+r.positives.map(p=>`<div class="positive">✓ ${esc(p)}</div>`).join('');
+  if(r.summary)html+='<div class="summary-box">'+esc(r.summary)+'</div>';
+  if(r.critical&&r.critical.length)html+='<div class="shdr">🔴 Critical ('+r.critical.length+')</div>'+r.critical.map(function(i){return issueHtml(i,'#f87171',lang);}).join('');
+  if(r.warnings&&r.warnings.length)html+='<div class="shdr">🟡 Warnings ('+r.warnings.length+')</div>'+r.warnings.map(function(i){return issueHtml(i,'#fbbf24',lang);}).join('');
+  if(r.improvements&&r.improvements.length)html+='<div class="shdr">🔵 Improvements ('+r.improvements.length+')</div>'+r.improvements.map(function(i){return issueHtml(i,'#38bdf8',lang);}).join('');
+  if(r.positives&&r.positives.length)html+='<div class="shdr">✅ What\'s Good</div>'+r.positives.map(function(p){return '<div class="positive">✓ '+esc(p)+'</div>';}).join('');
 
-  const cHtml=r.commented_code?`
-    <p style="font-size:13px;color:#94a3b8;margin-bottom:12px;">Professional inline comments added throughout.</p>
-    ${makeCodeBlock(r.commented_code,lang,"navigator.clipboard.writeText(currentResult.commented_code).then(()=>alert('Copied!'))")}`:
-    '<p style="color:#64748b;font-size:13px;">Enable "Add Code Comments" option and re-run.</p>';
+  const cHtml=r.commented_code?'<p style="font-size:13px;color:#94a3b8;margin-bottom:12px;">Professional inline comments added throughout.</p>'+makeCodeBlock(r.commented_code,lang,'navigator.clipboard.writeText(currentResult.commented_code).then(function(){alert("Copied!")})'):'<p style="color:#64748b;font-size:13px;">Enable "Add Code Comments" and re-run.</p>';
+  const rHtml=r.refactored?'<p style="font-size:13px;color:#94a3b8;margin-bottom:12px;">All issues fixed — production-ready version.</p>'+makeCodeBlock(r.refactored,lang,'navigator.clipboard.writeText(currentResult.refactored).then(function(){alert("Copied!")})'):'<p style="color:#64748b;font-size:13px;">No refactored version returned.</p>';
 
-  const rHtml=r.refactored?`
-    <p style="font-size:13px;color:#94a3b8;margin-bottom:12px;">✅ Every possible issue fixed — bugs, security, performance, naming, edge cases, error handling and more. Production-ready.</p>
-    ${makeCodeBlock(r.refactored,lang,"navigator.clipboard.writeText(currentResult.refactored).then(()=>alert('Copied!'))")}`:
-    '<p style="color:#64748b;font-size:13px;">No refactored version returned.</p>';
-
-  document.getElementById('panels').innerHTML=`
-    <div class="out-panel show" id="panel-review">${html}</div>
-    <div class="out-panel" id="panel-comments">${cHtml}</div>
-    <div class="out-panel" id="panel-refactored">${rHtml}</div>`;
+  document.getElementById('panels').innerHTML='<div class="out-panel show" id="panel-review">'+html+'</div><div class="out-panel" id="panel-comments">'+cHtml+'</div><div class="out-panel" id="panel-refactored">'+rHtml+'</div>';
 }
 
 function issueHtml(i,col,lang){
   const fixBlock=i.fix?makeCodeBlock(i.fix,lang,''):'';
-  return `<div class="issue" style="border-color:${col}">
-    <div class="ititle" style="color:${col}">${esc(i.title||'')}</div>
-    <div class="ibody">${esc(i.description||'')}${fixBlock}</div>
-  </div>`;
+  return '<div class="issue" style="border-color:'+col+'"><div class="ititle" style="color:'+col+'">'+esc(i.title||'')+'</div><div class="ibody">'+esc(i.description||'')+fixBlock+'</div></div>';
 }
 
 function switchOut(id,btn){
-  document.querySelectorAll('.out-tab').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.out-panel').forEach(p=>p.classList.remove('show'));
+  document.querySelectorAll('.out-tab').forEach(function(b){b.classList.remove('active');});
+  document.querySelectorAll('.out-panel').forEach(function(p){p.classList.remove('show');});
   btn.classList.add('active');document.getElementById('panel-'+id).classList.add('show');
 }
 function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function copyJSON(){navigator.clipboard.writeText(JSON.stringify(currentResult,null,2)).then(()=>alert('JSON copied!'));}
+function copyJSON(){navigator.clipboard.writeText(JSON.stringify(currentResult,null,2)).then(function(){alert('JSON copied!');});}
 function clearAll(){
   document.getElementById('code').value='';
   document.getElementById('lineNums').innerHTML='1';
@@ -434,166 +368,23 @@ function clearAll(){
   document.getElementById('runBtn').textContent='▶ Run AI Review';
 }
 
-// ── DRAG DROP ──
 const dz=document.getElementById('dropZone');
 if(dz){
-  dz.addEventListener('dragover',e=>{e.preventDefault();dz.style.borderColor='#22d3ee';});
-  dz.addEventListener('dragleave',()=>{dz.style.borderColor='#334155';});
-  dz.addEventListener('drop',async e=>{
+  dz.addEventListener('dragover',function(e){e.preventDefault();dz.style.borderColor='#22d3ee';});
+  dz.addEventListener('dragleave',function(){dz.style.borderColor='#334155';});
+  dz.addEventListener('drop',async function(e){
     e.preventDefault();dz.style.borderColor='#334155';
     const all=[];
     async function traverse(entry){
       if(!entry)return;
-      if(entry.isFile)await new Promise(r=>entry.file(f=>{all.push(f);r()}));
-      else if(entry.isDirectory){const rd=entry.createReader();await new Promise(r=>rd.readEntries(async es=>{for(const en of es)await traverse(en);r()}));}
+      if(entry.isFile)await new Promise(function(r){entry.file(function(f){all.push(f);r();});});
+      else if(entry.isDirectory){const rd=entry.createReader();await new Promise(function(r){rd.readEntries(async function(es){for(const en of es)await traverse(en);r();});});}
     }
-    for(const item of[...e.dataTransfer.items]){const en=item.webkitGetAsEntry?.();if(en)await traverse(en);else if(item.getAsFile)all.push(item.getAsFile());}
+    for(const item of [...e.dataTransfer.items]){const en=item.webkitGetAsEntry&&item.webkitGetAsEntry();if(en)await traverse(en);else if(item.getAsFile)all.push(item.getAsFile());}
     addFiles(all);
   });
 }
 
-// Init line numbers
-updateLineNums();
-</script>
-</body>
-</html>
-);
-    const prompt=`You are a senior ${lang} engineer doing a thorough production-grade code review.
-
-Review focus for the REPORT: ${focus}
-Language: ${lang}
-
-CODE:
-\`\`\`${lang}
-${src.substring(0,12000)}
-\`\`\`
-
-CRITICAL INSTRUCTIONS FOR REFACTORED CODE:
-- The "refactored" field must fix ABSOLUTELY EVERYTHING wrong with the code — bugs, security holes, performance issues, naming, SOLID principles, error handling, edge cases, type hints, docstrings, magic numbers, dead code, inefficient algorithms, SQL injection, XSS, hardcoded secrets, missing validations — regardless of the review focus selected above.
-- The refactored code must be production-ready, clean, and complete. Do not leave anything broken or suboptimal.
-- Preserve the original logic and intent but improve everything else.
-${wantComments?'- The "commented_code" field: take the REFACTORED version and add professional inline comments explaining every function, class, and non-obvious line.':''}
-
-Return ONLY raw JSON (no markdown fences, no extra text):
-{"scores":{"overall":72,"reusability":65,"performance":80,"security":70},"summary":"2-3 sentence overview of all issues found","critical":[{"title":"...","description":"...","fix":"short snippet showing the fix"}],"warnings":[{"title":"...","description":"...","fix":"short snippet showing the fix"}],"improvements":[{"title":"...","description":"...","fix":"short snippet showing the fix"}],"refactored":"COMPLETE fully corrected production-ready code with every possible issue fixed"${wantComments?',"commented_code":"refactored code with professional inline comments on every function and key line"':''},"positives":["specific strength 1","specific strength 2","specific strength 3"]}`;
-
-    const res=await fetch(GROQ_URL,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[{role:'user',content:prompt}],max_tokens:4000,temperature:.1})});
-    clearInterval(lInt);
-    const data=await res.json();
-    if(!res.ok||data.error)throw new Error(data.error?.message||'API error');
-    const raw=data.choices?.[0]?.message?.content||'';
-    if(!raw)throw new Error('Empty response.');
-    let parsed;
-    const clean=raw.replace(/```json|```/gm,'').trim();
-    function safeParseJSON(str){
-      // Remove bad control characters except \n \r \t
-      const sanitized=str.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g,'');
-      // Escape unescaped newlines/tabs inside JSON string values
-      const fixed=sanitized.replace(/"((?:[^"\\]|\\.)*)"/gs,(match,inner)=>{
-        const escaped=inner
-          .replace(/\n/g,'\\n')
-          .replace(/\r/g,'\\r')
-          .replace(/\t/g,'\\t');
-        return `"${escaped}"`;
-      });
-      return JSON.parse(fixed);
-    }
-    try{parsed=safeParseJSON(clean);}
-    catch{
-      const m=clean.match(/\{[\s\S]*\}/);
-      if(!m)throw new Error('Bad JSON response from AI. Please try again.');
-      try{parsed=safeParseJSON(m[0]);}
-      catch(e){throw new Error('Could not parse AI response. Try again.');}
-    }
-    currentResult=parsed;currentResult._lang=lang;
-    setLoading(false);renderOutput(parsed,lang);
-  }catch(e){setLoading(false);showErr(e.message);}
-}
-
-// ── RENDER OUTPUT ──
-function scoreCol(v){return v>=80?'#4ade80':v>=55?'#fbbf24':'#f87171';}
-
-function renderOutput(r,lang){
-  document.getElementById('output').classList.add('show');
-  const sc=r.scores||{};
-  document.getElementById('scoreGrid').innerHTML=[['Overall',sc.overall||0],['Reusability',sc.reusability||0],['Performance',sc.performance||0],['Security',sc.security||0]].map(([l,v])=>{
-    const c=scoreCol(v);
-    return `<div class="score-card"><div class="score-val" style="color:${c}">${v}<span style="font-size:14px">%</span></div><div class="prog"><div class="prog-fill" style="width:${v}%;background:${c}"></div></div><div class="score-lbl">${l}</div></div>`;
-  }).join('');
-
-  const tabs=[{id:'review',label:'📋 Review'}];
-  if(r.commented_code)tabs.push({id:'comments',label:'💬 Commented'});
-  if(r.refactored)tabs.push({id:'refactored',label:'🔧 Fully Fixed'});
-  document.getElementById('outTabs').innerHTML=tabs.map((t,i)=>`<button class="out-tab ${i===0?'active':''}" onclick="switchOut('${t.id}',this)">${t.label}</button>`).join('');
-
-  let html='';
-  if(r.summary)html+=`<div class="summary-box">${esc(r.summary)}</div>`;
-  if(r.critical?.length)html+=`<div class="shdr">🔴 Critical (${r.critical.length})</div>`+r.critical.map(i=>issueHtml(i,'#f87171',lang)).join('');
-  if(r.warnings?.length)html+=`<div class="shdr">🟡 Warnings (${r.warnings.length})</div>`+r.warnings.map(i=>issueHtml(i,'#fbbf24',lang)).join('');
-  if(r.improvements?.length)html+=`<div class="shdr">🔵 Improvements (${r.improvements.length})</div>`+r.improvements.map(i=>issueHtml(i,'#38bdf8',lang)).join('');
-  if(r.positives?.length)html+=`<div class="shdr">✅ What's Good</div>`+r.positives.map(p=>`<div class="positive">✓ ${esc(p)}</div>`).join('');
-
-  const cHtml=r.commented_code?`
-    <p style="font-size:13px;color:#94a3b8;margin-bottom:12px;">Professional inline comments added throughout.</p>
-    ${makeCodeBlock(r.commented_code,lang,"navigator.clipboard.writeText(currentResult.commented_code).then(()=>alert('Copied!'))")}`:
-    '<p style="color:#64748b;font-size:13px;">Enable "Add Code Comments" option and re-run.</p>';
-
-  const rHtml=r.refactored?`
-    <p style="font-size:13px;color:#94a3b8;margin-bottom:12px;">✅ Every possible issue fixed — bugs, security, performance, naming, edge cases, error handling and more. Production-ready.</p>
-    ${makeCodeBlock(r.refactored,lang,"navigator.clipboard.writeText(currentResult.refactored).then(()=>alert('Copied!'))")}`:
-    '<p style="color:#64748b;font-size:13px;">No refactored version returned.</p>';
-
-  document.getElementById('panels').innerHTML=`
-    <div class="out-panel show" id="panel-review">${html}</div>
-    <div class="out-panel" id="panel-comments">${cHtml}</div>
-    <div class="out-panel" id="panel-refactored">${rHtml}</div>`;
-}
-
-function issueHtml(i,col,lang){
-  const fixBlock=i.fix?makeCodeBlock(i.fix,lang,''):'';
-  return `<div class="issue" style="border-color:${col}">
-    <div class="ititle" style="color:${col}">${esc(i.title||'')}</div>
-    <div class="ibody">${esc(i.description||'')}${fixBlock}</div>
-  </div>`;
-}
-
-function switchOut(id,btn){
-  document.querySelectorAll('.out-tab').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.out-panel').forEach(p=>p.classList.remove('show'));
-  btn.classList.add('active');document.getElementById('panel-'+id).classList.add('show');
-}
-function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function copyJSON(){navigator.clipboard.writeText(JSON.stringify(currentResult,null,2)).then(()=>alert('JSON copied!'));}
-function clearAll(){
-  document.getElementById('code').value='';
-  document.getElementById('lineNums').innerHTML='1';
-  files=[];renderFiles();
-  document.getElementById('output').classList.remove('show');
-  document.getElementById('errBox').classList.remove('show');
-  document.getElementById('runBtn').disabled=false;
-  document.getElementById('runBtn').textContent='▶ Run AI Review';
-}
-
-// ── DRAG DROP ──
-const dz=document.getElementById('dropZone');
-if(dz){
-  dz.addEventListener('dragover',e=>{e.preventDefault();dz.style.borderColor='#22d3ee';});
-  dz.addEventListener('dragleave',()=>{dz.style.borderColor='#334155';});
-  dz.addEventListener('drop',async e=>{
-    e.preventDefault();dz.style.borderColor='#334155';
-    const all=[];
-    async function traverse(entry){
-      if(!entry)return;
-      if(entry.isFile)await new Promise(r=>entry.file(f=>{all.push(f);r()}));
-      else if(entry.isDirectory){const rd=entry.createReader();await new Promise(r=>rd.readEntries(async es=>{for(const en of es)await traverse(en);r()}));}
-    }
-    for(const item of[...e.dataTransfer.items]){const en=item.webkitGetAsEntry?.();if(en)await traverse(en);else if(item.getAsFile)all.push(item.getAsFile());}
-    addFiles(all);
-  });
-}
-
-// Init line numbers
 updateLineNums();
 </script>
 </body>
